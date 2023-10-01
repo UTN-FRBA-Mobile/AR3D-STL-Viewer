@@ -2,7 +2,6 @@ package com.example.practica.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
@@ -26,15 +25,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
 import com.example.practica.main.AppScaffold
 import com.example.practica.services.Capitulo
 import com.example.practica.services.CapitulosPorPagina
 import com.example.practica.services.apiService
-import com.google.ar.core.examples.kotlin.arcore.ArCoreActivity
 import retrofit2.HttpException
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
+import com.example.practica.arcore.ArCoreActivity
 
 
 class MainActivity : ComponentActivity() {

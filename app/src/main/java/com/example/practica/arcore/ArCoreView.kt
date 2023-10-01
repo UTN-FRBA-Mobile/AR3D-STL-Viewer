@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.ar.core.examples.kotlin.arcore
+package com.example.practica.arcore
 
 import android.content.res.Resources
 import android.opengl.GLSurfaceView
@@ -24,6 +24,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.example.practica.R
+import com.example.practica.arcore.ArCoreActivity
 import com.example.practica.common.helpers.SnackbarHelper
 import com.example.practica.common.helpers.TapHelper
 import com.google.ar.core.Config

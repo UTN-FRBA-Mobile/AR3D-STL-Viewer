@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.ar.core.examples.kotlin.arcore
+package com.example.practica.arcore
 
 import android.opengl.GLES30
 import android.opengl.Matrix
@@ -21,6 +21,7 @@ import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.example.practica.R
+import com.example.practica.arcore.ArCoreActivity
 import com.example.practica.common.helpers.DisplayRotationHelper
 import com.example.practica.common.helpers.TrackingStateHelper
 import com.example.practica.common.render.Framebuffer
