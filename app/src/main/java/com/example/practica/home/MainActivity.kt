@@ -3,7 +3,9 @@ package com.example.practica.home
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,7 +32,6 @@ import com.example.practica.services.Capitulo
 import com.example.practica.services.CapitulosPorPagina
 import com.example.practica.services.apiService
 import retrofit2.HttpException
-import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import com.example.practica.arcore.ArCoreActivity
 
@@ -49,6 +50,11 @@ class MainActivity : ComponentActivity() {
 fun App() {
     val context = LocalContext.current
     val capitulo = remember {mutableStateOf(1)}
+    val addFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
+        if (it != null) {
+            println("Selected file URI: $it")
+        }
+    }
     AppScaffold() {
         Box(
             modifier = Modifier
@@ -66,6 +72,13 @@ fun App() {
                     }
                 ) {
                     Text(text= "Realidad aumentada")
+                }
+                Button(
+                    onClick = {
+                        addFileLauncher.launch("*/*")
+                    }
+                ) {
+                    Text(text= "Agregar Archivo STL")
                 }
                 Button(
                     onClick = {capitulo.value = capitulo.value + 1},
