@@ -67,7 +67,7 @@ fun CardObjeto3d(context: Context, objeto3d: Objeto3d) {
         colors = CardDefaults
             .cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         modifier = Modifier
-            .padding(16.dp, 0.dp, 16.dp, 16.dp)
+            .padding(16.dp, 16.dp, 16.dp, 0.dp)
     ) {
         Text(
             text = objeto3d.name,
