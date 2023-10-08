@@ -21,7 +21,6 @@ import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.example.practica.R
-import com.example.practica.arcore.ArCoreActivity
 import com.example.practica.common.helpers.DisplayRotationHelper
 import com.example.practica.common.helpers.TrackingStateHelper
 import com.example.practica.common.render.Framebuffer
@@ -54,6 +53,7 @@ import java.nio.ByteBuffer
 /** Renders the HelloAR application using our example Renderer. */
 class ArCoreRenderer(val activity: ArCoreActivity) :
   SampleRender.Renderer, DefaultLifecycleObserver {
+
   companion object {
     val TAG = "ArcoreRenderer"
 
@@ -144,8 +144,8 @@ class ArCoreRenderer(val activity: ArCoreActivity) :
   override fun onPause(owner: LifecycleOwner) {
     displayRotationHelper.onPause()
   }
-
   override fun onSurfaceCreated(render: SampleRender) {
+
     // Prepare the rendering objects.
     // This involves reading shaders and 3D model files, so may throw an IOException.
     try {
@@ -230,7 +230,7 @@ class ArCoreRenderer(val activity: ArCoreActivity) :
           Texture.WrapMode.CLAMP_TO_EDGE,
           Texture.ColorFormat.LINEAR
         )
-      virtualObjectMesh = Mesh.createFromAsset(render, "models/beer.obj")
+      virtualObjectMesh = Mesh.createFromAsset(render)
       virtualObjectShader =
         Shader.createFromAssets(
             render,

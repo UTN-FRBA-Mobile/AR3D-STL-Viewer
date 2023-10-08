@@ -19,6 +19,8 @@ import android.content.res.AssetManager;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 
+import org.jetbrains.annotations.Nullable;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -31,6 +33,7 @@ public class SampleRender {
   private int viewportWidth = 1;
   private int viewportHeight = 1;
 
+  private String objeto3dARenderizar = "";
   /**
    * Constructs a SampleRender object and instantiates GLSurfaceView parameters.
    *
@@ -38,8 +41,9 @@ public class SampleRender {
    * @param renderer Renderer implementation to receive callbacks
    * @param assetManager AssetManager for loading Android resources
    */
-  public SampleRender(GLSurfaceView glSurfaceView, Renderer renderer, AssetManager assetManager) {
+  public SampleRender(GLSurfaceView glSurfaceView, Renderer renderer, AssetManager assetManager, String objeto3dARenderizar) {
     this.assetManager = assetManager;
+    this.objeto3dARenderizar = objeto3dARenderizar;
     glSurfaceView.setPreserveEGLContextOnPause(true);
     glSurfaceView.setEGLContextClientVersion(3);
     glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
@@ -103,7 +107,7 @@ public class SampleRender {
 
   /** Interface to be implemented for rendering callbacks. */
   public static interface Renderer {
-    /**
+      /**
      * Called by {@link SampleRender} when the GL render surface is created.
      *
      * <p>See {@link GLSurfaceView.Renderer#onSurfaceCreated}.
@@ -147,5 +151,9 @@ public class SampleRender {
     GLError.maybeThrowGLException("Failed to bind framebuffer", "glBindFramebuffer");
     GLES30.glViewport(0, 0, viewportWidth, viewportHeight);
     GLError.maybeThrowGLException("Failed to set viewport dimensions", "glViewport");
+  }
+
+  public String getObjeto3dARenderizar() {
+    return objeto3dARenderizar;
   }
 }

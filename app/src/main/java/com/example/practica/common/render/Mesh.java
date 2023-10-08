@@ -18,6 +18,7 @@ package com.example.practica.common.render;
 import android.opengl.GLES30;
 import android.util.Log;
 
+import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -124,8 +125,9 @@ public class Mesh implements Closeable {
    * coordinates (location 0, vec3), texture coordinates (location 1, vec2), and vertex normals
    * (location 2, vec3).
    */
-  public static Mesh createFromAsset(SampleRender render, String assetFileName) throws IOException {
-    try (InputStream inputStream = render.getAssets().open(assetFileName)) {
+  public static Mesh createFromAsset(SampleRender render) throws IOException {
+
+    try (InputStream inputStream =  new ByteArrayInputStream(render.getObjeto3dARenderizar().getBytes())) {
       Obj obj = ObjUtils.convertToRenderable(ObjReader.read(inputStream));
 
       // Obtain the data from the OBJ, as direct buffers:

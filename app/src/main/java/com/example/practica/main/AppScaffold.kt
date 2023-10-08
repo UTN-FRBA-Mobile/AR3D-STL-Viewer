@@ -15,17 +15,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.practica.ui.theme.PracticaTheme
 
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppScaffold(content: @Composable (PaddingValues) -> Unit) {
+fun AppScaffold(textoTopBar: String, content: @Composable (PaddingValues) -> Unit) {
     PracticaTheme {
         Scaffold(
             topBar = {
                 CenterAlignedTopAppBar(
                     title = {
-                        Text(text = "Capítulos de Rick Y Morty", color = Color.White)
+                        Text(text = textoTopBar, color = Color.White)
                     },
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
                     navigationIcon = {}

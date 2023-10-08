@@ -24,7 +24,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.example.practica.R
-import com.example.practica.arcore.ArCoreActivity
 import com.example.practica.common.helpers.SnackbarHelper
 import com.example.practica.common.helpers.TapHelper
 import com.google.ar.core.Config

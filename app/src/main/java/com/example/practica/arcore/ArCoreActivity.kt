@@ -15,6 +15,7 @@
  */
 package com.example.practica.arcore
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -33,6 +34,11 @@ import com.google.ar.core.exceptions.UnavailableApkTooOldException
 import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException
+import java.io.BufferedReader
+import java.io.File
+import java.io.FileReader
+import java.io.IOException
+
 
 /**
  * This is a simple example that shows how to create an augmented reality (AR) application using the
@@ -40,6 +46,8 @@ import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationExceptio
  * plane to place a 3D model.
  */
 class ArCoreActivity : AppCompatActivity() {
+
+
   companion object {
     private const val TAG = "ArcoreActivity"
   }
@@ -53,6 +61,8 @@ class ArCoreActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+
+    var nombreArchivoObjeto3dObj = intent.extras?.getString("nombreArchivoObjeto3dObj")
 
     // Setup ARCore session lifecycle helper and configuration.
     arCoreSessionHelper = ARCoreSessionLifecycleHelper(this)
@@ -87,11 +97,36 @@ class ArCoreActivity : AppCompatActivity() {
     lifecycle.addObserver(view)
     setContentView(view.root)
 
-    // Sets up an example renderer using our HelloARRenderer.
-    SampleRender(view.surfaceView, renderer, assets)
+    var objeto3d = buscarArchivo(this, nombreArchivoObjeto3dObj!!)
+
+    // Sets up an example renderer using our ARCoreRenderer.
+    SampleRender(view.surfaceView, renderer, assets, objeto3d)
 
     depthSettings.onCreate(this)
     instantPlacementSettings.onCreate(this)
+  }
+
+  fun buscarArchivo(context: Context, nombreArchivo: String): String {
+    val directorio = context.getExternalFilesDir(null)
+
+    val archivo = File(directorio, nombreArchivo)
+
+    val contenido = StringBuilder()
+
+    try {
+      val lector = BufferedReader(FileReader(archivo))
+      var linea: String?
+
+      while (lector.readLine().also { linea = it } != null) {
+        contenido.append(linea).append('\n')
+      }
+
+      lector.close()
+    } catch (e: IOException) {
+      // Maneja errores de lectura
+      e.printStackTrace()
+    }
+    return contenido.toString()
   }
 
   // Configure the session, using Lighting Estimation, and Depth mode.
