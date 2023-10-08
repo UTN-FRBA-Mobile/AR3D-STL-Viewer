@@ -120,9 +120,7 @@ suspend fun lanzarVistaPrevia(
 fun existeElArchivo(context: Context, nombreArchivo: String): Boolean {
     val directorio = context.getExternalFilesDir(null)
 
-    val archivo = File(directorio, nombreArchivo)
-
-    return archivo != null
+    return File(directorio, nombreArchivo).isFile()
 }
 
 suspend fun guardarArchivoEnAlmacenamientoExterno(context: Context, nombreArchivo: String, contenido: String) {
