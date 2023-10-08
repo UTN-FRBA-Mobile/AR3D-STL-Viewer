@@ -36,7 +36,7 @@ fun App() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 75.dp),
+                .padding(top = 64.dp),
             contentAlignment = Alignment.Center
         ) {
             Column(
