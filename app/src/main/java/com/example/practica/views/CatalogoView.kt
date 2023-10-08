@@ -38,18 +38,24 @@ import java.io.FileOutputStream
 @Composable
 fun Catalogo(context: Context, textoTopBar: MutableState<String>) {
     val objetos3d = remember { mutableStateOf<List<Objeto3d>?>(null) }
+    val cargandoCatalogo = remember { mutableStateOf<Boolean>(true) }
     textoTopBar.value = "Catálogo"
 
     LaunchedEffect(1) {
         objetos3d.value = catalogoApiService().getObjetos3d()
+        cargandoCatalogo.value = false
     }
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        objetos3d.value?.let {
-            items(it.size) { index ->
-                CardObjeto3d(context,it[index])
+    if(cargandoCatalogo.value) {
+        Spinner()
+    } else {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            objetos3d.value?.let {
+                items(it.size) { index ->
+                    CardObjeto3d(context,it[index])
+                }
             }
         }
     }
