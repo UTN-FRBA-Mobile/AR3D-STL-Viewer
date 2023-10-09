@@ -36,12 +36,9 @@ fun App() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 75.dp),
-            contentAlignment = Alignment.Center
+                .padding(top = 64.dp)
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+            Column() {
                 if(catalogoEsVisible.value) {
                     Catalogo(context, textoTopBar)
                 } else {
