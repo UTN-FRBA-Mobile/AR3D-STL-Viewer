@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,7 +41,7 @@ fun Home(context: Context, catalogoEsVisible: MutableState<Boolean>) {
         modifier = Modifier,
         verticalArrangement = Arrangement.Top
     ) {
-        Button(
+        FilledTonalButton(
             onClick = {
                 addFileLauncher.launch("*/*")
             },
@@ -50,7 +51,7 @@ fun Home(context: Context, catalogoEsVisible: MutableState<Boolean>) {
         ) {
             Text(text= "Seleccionar nuevo")
         }
-        Button(
+        FilledTonalButton(
             onClick = {catalogoEsVisible.value = true},
             modifier = Modifier
                 .fillMaxWidth()

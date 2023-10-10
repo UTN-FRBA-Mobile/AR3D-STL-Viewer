@@ -11,12 +11,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -60,8 +64,6 @@ fun ListaObjetosRecientes(
 fun ObjetoReciente(nombreObjeto: String, context: Context, objetoEliminado: MutableState<Boolean>) {
     val verPopUp = remember { mutableStateOf(false) }
     Card(
-        colors = CardDefaults
-            .cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp, 8.dp, 16.dp, 8.dp)
@@ -73,7 +75,7 @@ fun ObjetoReciente(nombreObjeto: String, context: Context, objetoEliminado: Muta
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = nombreObjeto, fontWeight = FontWeight.Bold)
+            Text(text = nombreObjeto, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 8.dp))
             Box {
                 ElevatedButton(
                     modifier = Modifier,
