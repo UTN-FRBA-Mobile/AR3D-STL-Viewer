@@ -1,13 +1,13 @@
 package com.example.practica.views
 
 import android.content.Context
-import androidx.compose.foundation.layout.Arrangement
+import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,19 +17,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
+import com.example.practica.arcore.ArCoreActivity
+import com.example.practica.repository.buscarObjetosVistosRecientemente
 
 @Composable
 fun Home(context: Context, catalogoEsVisible: MutableState<Boolean>) {
     val objetosVistosRecientemente = remember { mutableStateOf<List<String>>(emptyList()) }
+    val objetoEliminado = remember { mutableStateOf<Boolean>(false) }
 
-    LaunchedEffect(1) {
+    LaunchedEffect(1, objetoEliminado.value) {
         objetosVistosRecientemente.value = buscarObjetosVistosRecientemente(context)
+        objetoEliminado.value = false
     }
 
     val addFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
@@ -37,6 +35,7 @@ fun Home(context: Context, catalogoEsVisible: MutableState<Boolean>) {
             println("Selected file URI: $it")
         }
     }
+
     Column(
         modifier = Modifier,
         verticalArrangement = Arrangement.Top
@@ -59,62 +58,12 @@ fun Home(context: Context, catalogoEsVisible: MutableState<Boolean>) {
         ) {
             Text(text = "Buscar en catálogo")
         }
-        ListaObjetosRecientes(objetosVistosRecientemente.value)
+        ListaObjetosRecientes(objetosVistosRecientemente.value, context, objetoEliminado)
     }
 }
 
-@Composable
-fun ListaObjetosRecientes(objetosVistosRecientemente: List<String>) {
-    Text(
-        modifier = Modifier
-            .padding(16.dp, 50.dp, 0.dp, 0.dp),
-        text = "Objetos vistos recientemente"
-    )
-    Box (
-        modifier = Modifier
-            .padding(0.dp, 0.dp, 0.dp, 0.dp)
-            .height(400.dp)) {
-        LazyColumn(
-        ) {
-            objetosVistosRecientemente?.let {
-                items(it.size) { index ->
-                    ObjetoReciente(it[index])
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun ObjetoReciente(nombreObjeto: String) {
-    Card(
-        colors = CardDefaults
-            .cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp, 16.dp, 16.dp, 0.dp)
-    ) {
-        Text(
-            modifier = Modifier.padding(8.dp),
-            text = nombreObjeto
-        )
-    }
-}
-
-fun buscarObjetosVistosRecientemente(context: Context): List<String> {
-    val nombresDeArchivos = mutableListOf<String>()
-
-    val directorio = context.getExternalFilesDir(null)
-
-    if (directorio != null && directorio.exists() && directorio.isDirectory) {
-        val archivos = directorio.listFiles()
-        if (archivos != null) {
-            for (archivo in archivos) {
-                if (archivo.isFile) {
-                    nombresDeArchivos.add(archivo.name)
-                }
-            }
-        }
-    }
-    return nombresDeArchivos
+fun lanzarVistaPreviaObjetoReciente(context: Context, nombreObjeto3dObj: String) {
+    var intentVisualizarEn3d = Intent(context, ArCoreActivity::class.java)
+    intentVisualizarEn3d.putExtra("nombreArchivoObjeto3dObj", nombreObjeto3dObj);
+    context.startActivity(intentVisualizarEn3d)
 }

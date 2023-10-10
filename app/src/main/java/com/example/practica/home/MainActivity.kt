@@ -38,7 +38,8 @@ fun App() {
                 .fillMaxSize()
                 .padding(top = 64.dp)
         ) {
-            Column() {
+            Column(
+            ) {
                 if(catalogoEsVisible.value) {
                     Catalogo(context, textoTopBar)
                 } else {

@@ -18,5 +18,7 @@
 
     <string translatable="false" name="searching_planes">Searching for surfaces...</string>
     <string translatable="false" name="waiting_taps">Tap on a surface to place an object.</string>
+    <string name="visualizar_objeto_reciente" />
+    <string name="eliminacion_objeto_visto" />
 
 </resources>

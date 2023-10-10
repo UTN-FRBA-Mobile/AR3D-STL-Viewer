@@ -29,6 +29,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.practica.arcore.ArCoreActivity
+import com.example.practica.repository.existeElArchivo
+import com.example.practica.repository.guardarArchivoEnAlmacenamientoExterno
 import com.example.practica.services.Objeto3d
 import com.example.practica.services.catalogoApiService
 import java.io.File
@@ -121,23 +123,6 @@ suspend fun lanzarVistaPrevia(
         intentVisualizarEn3d.putExtra("nombreArchivoObjeto3dObj", nombreArchivoObjeto3dObj);
         context.startActivity(intentVisualizarEn3d)
     }
-}
-
-fun existeElArchivo(context: Context, nombreArchivo: String): Boolean {
-    val directorio = context.getExternalFilesDir(null)
-
-    return File(directorio, nombreArchivo).isFile()
-}
-
-suspend fun guardarArchivoEnAlmacenamientoExterno(context: Context, nombreArchivo: String, contenido: String) {
-    val directorio = context.getExternalFilesDir(null)
-
-    val archivo = File(directorio, nombreArchivo)
-    archivo.createNewFile()
-
-    val outputStream = FileOutputStream(archivo)
-    outputStream.write(contenido.toByteArray())
-    outputStream.close()
 }
 
 fun convertirBase64ABitMap(base64: String): ImageBitmap {
