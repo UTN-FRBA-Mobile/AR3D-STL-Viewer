@@ -2,6 +2,8 @@ package com.example.practica.views
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -29,35 +31,11 @@ import java.io.InputStreamReader
 fun Home(context: Context, catalogoEsVisible: MutableState<Boolean>) {
     val objetosVistosRecientemente = remember { mutableStateOf<List<String>>(emptyList()) }
     val objetoEliminado = remember { mutableStateOf<Boolean>(false) }
+    val addFileLauncher = managedActivityResultLauncher(context, objetosVistosRecientemente)
 
     LaunchedEffect(1, objetoEliminado.value) {
         objetosVistosRecientemente.value = buscarObjetosVistosRecientemente(context)
         objetoEliminado.value = false
-    }
-
-    val addFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
-        if (it != null) {
-            println("Selected file URI: $it")
-
-            val inputStream = context.contentResolver.openInputStream(it)
-
-            val stringBuilder = StringBuilder()
-            inputStream?.use { stream ->
-                val reader = BufferedReader(InputStreamReader(stream))
-                var line: String?
-                while (reader.readLine().also { line = it } != null) {
-                    stringBuilder.append(line)
-                }
-            }
-
-            val fileText = stringBuilder.toString()
-            println("File content: $fileText")
-
-            CoroutineScope(Dispatchers.Default).launch {
-                lanzarVistaPrevia(context, fileText)
-            }
-
-        }
     }
 
     Column(
@@ -84,6 +62,44 @@ fun Home(context: Context, catalogoEsVisible: MutableState<Boolean>) {
         }
         ListaObjetosRecientes(objetosVistosRecientemente.value, context, objetoEliminado)
     }
+}
+
+@Composable
+private fun managedActivityResultLauncher(
+    context: Context,
+    objetosVistosRecientemente: MutableState<List<String>>
+): ManagedActivityResultLauncher<String, Uri?> {
+    val addFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
+        if (it != null) {
+
+            val inputStream = context.contentResolver.openInputStream(it)
+
+            val stringBuilder = StringBuilder()
+            inputStream?.use { stream ->
+                val reader = BufferedReader(InputStreamReader(stream))
+                var line: String?
+                while (reader.readLine().also { line = it } != null) {
+                    stringBuilder.append(line)
+                }
+            }
+
+            val fileText = stringBuilder.toString()
+
+            val corutinaLanzarVistaPrevia = CoroutineScope(Dispatchers.Default).launch {
+                lanzarVistaPrevia(context, fileText)
+            }
+
+            corutinaLanzarVistaPrevia.invokeOnCompletion { causa ->
+                if(causa == null) {
+                    objetosVistosRecientemente.value = buscarObjetosVistosRecientemente(context)
+                } else {
+                    // hacer algo por si la corutina falla
+                }
+            }
+
+        }
+    }
+    return addFileLauncher
 }
 
 fun lanzarVistaPreviaObjetoReciente(context: Context, nombreObjeto3dObj: String) {
