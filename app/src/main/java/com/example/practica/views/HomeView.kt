@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.practica.arcore.ArCoreActivity
 import com.example.practica.repository.buscarObjetosVistosRecientemente
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 @Composable
 fun Home(context: Context, catalogoEsVisible: MutableState<Boolean>) {
@@ -34,6 +38,25 @@ fun Home(context: Context, catalogoEsVisible: MutableState<Boolean>) {
     val addFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
         if (it != null) {
             println("Selected file URI: $it")
+
+            val inputStream = context.contentResolver.openInputStream(it)
+
+            val stringBuilder = StringBuilder()
+            inputStream?.use { stream ->
+                val reader = BufferedReader(InputStreamReader(stream))
+                var line: String?
+                while (reader.readLine().also { line = it } != null) {
+                    stringBuilder.append(line)
+                }
+            }
+
+            val fileText = stringBuilder.toString()
+            println("File content: $fileText")
+
+            CoroutineScope(Dispatchers.Default).launch {
+                lanzarVistaPrevia(context, fileText)
+            }
+
         }
     }
 
