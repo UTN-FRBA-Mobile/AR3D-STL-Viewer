@@ -18,7 +18,9 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.practica.arcore.ArCoreActivity
 import com.example.practica.repository.buscarObjetosVistosRecientemente
 import kotlinx.coroutines.CoroutineScope
@@ -28,10 +30,12 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 
 @Composable
-fun Home(context: Context, catalogoEsVisible: MutableState<Boolean>) {
+fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
+    val context = LocalContext.current
     val objetosVistosRecientemente = remember { mutableStateOf<List<String>>(emptyList()) }
     val objetoEliminado = remember { mutableStateOf<Boolean>(false) }
     val addFileLauncher = managedActivityResultLauncher(context, objetosVistosRecientemente)
+    textoTopBar.value = "Bienvenido"
 
     LaunchedEffect(1, objetoEliminado.value) {
         objetosVistosRecientemente.value = buscarObjetosVistosRecientemente(context)
@@ -53,7 +57,7 @@ fun Home(context: Context, catalogoEsVisible: MutableState<Boolean>) {
             Text(text= "Seleccionar nuevo")
         }
         FilledTonalButton(
-            onClick = {catalogoEsVisible.value = true},
+            onClick = { navController.navigate("catalogo")},
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp, 8.dp, 16.dp, 0.dp)

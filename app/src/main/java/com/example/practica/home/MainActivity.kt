@@ -4,18 +4,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.practica.main.AppScaffold
 import com.example.practica.views.Catalogo
 import com.example.practica.views.Home
+import androidx.compose.runtime.Composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.composable
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,24 +27,23 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Preview
 @Composable
-fun App() {
-    val context = LocalContext.current
-    val catalogoEsVisible = remember {mutableStateOf(false)}
+fun App(navController: NavHostController = rememberNavController()) {
     val textoTopBar = remember { mutableStateOf("Bienvenido") }
-    AppScaffold(textoTopBar = textoTopBar.value) {
+    val rutaHome = "home"
+
+    AppScaffold(textoTopBar = textoTopBar.value, navController) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 64.dp)
         ) {
-            Column(
-            ) {
-                if(catalogoEsVisible.value) {
-                    Catalogo(context, textoTopBar)
-                } else {
-                    Home(context, catalogoEsVisible)
+            NavHost(navController = navController, startDestination = rutaHome) {
+                composable(rutaHome) {
+                    Home(navController, textoTopBar)
+                }
+                composable(route = "catalogo") {
+                    Catalogo(textoTopBar)
                 }
             }
         }

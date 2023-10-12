@@ -3,6 +3,7 @@ package com.example.practica.views
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import androidx.compose.ui.platform.LocalContext
 import android.util.Base64
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -33,14 +34,13 @@ import com.example.practica.repository.existeElArchivo
 import com.example.practica.repository.guardarArchivoEnAlmacenamientoExterno
 import com.example.practica.services.Objeto3d
 import com.example.practica.services.catalogoApiService
-import java.io.File
-import java.io.FileOutputStream
 
 
 @Composable
-fun Catalogo(context: Context, textoTopBar: MutableState<String>) {
+fun Catalogo(textoTopBar: MutableState<String>) {
+    val context = LocalContext.current
     val objetos3d = remember { mutableStateOf<List<Objeto3d>?>(null) }
-    val cargandoCatalogo = remember { mutableStateOf<Boolean>(true) }
+    val cargandoCatalogo = remember { mutableStateOf(true) }
     textoTopBar.value = "Catálogo"
 
     LaunchedEffect(1) {

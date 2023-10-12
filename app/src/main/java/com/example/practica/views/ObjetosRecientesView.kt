@@ -43,7 +43,7 @@ fun ListaObjetosRecientes(
     Text(
         modifier = Modifier
             .padding(16.dp, 50.dp, 0.dp, 0.dp),
-        text = "Objetos vistos recientemente"
+        text = if(objetosVistosRecientemente.size > 0) "Objetos vistos recientemente" else ""
     )
     Box (
         modifier = Modifier
