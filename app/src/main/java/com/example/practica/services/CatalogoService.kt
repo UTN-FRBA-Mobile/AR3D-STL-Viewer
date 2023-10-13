@@ -15,7 +15,7 @@ interface CatalogoApiService {
     suspend fun getObjetos3d(): List<Objeto3d>
 
     @GET("/catalogo")
-    suspend fun getObjetoPorNombre(@Query("names") name: String): String
+    suspend fun getObjetoPorNombre(@Query("name") name: String): String
 }
 
 fun catalogoApiService(): CatalogoApiService {
