@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun App(navController: NavHostController = rememberNavController()) {
     val textoTopBar = remember { mutableStateOf("Bienvenido") }
-    val rutaHomer = "home"
+    val rutaHome = "home"
 
     AppScaffold(textoTopBar = textoTopBar.value, navController) {
         Box(
@@ -38,8 +38,8 @@ fun App(navController: NavHostController = rememberNavController()) {
                 .fillMaxSize()
                 .padding(top = 64.dp)
         ) {
-            NavHost(navController = navController, startDestination = rutaHomer) {
-                composable(rutaHomer) {
+            NavHost(navController = navController, startDestination = rutaHome) {
+                composable(rutaHome) {
                     Home(navController, textoTopBar)
                 }
                 composable(route = "catalogo") {
