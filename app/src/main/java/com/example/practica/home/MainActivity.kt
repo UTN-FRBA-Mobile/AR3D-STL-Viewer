@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.example.practica.views.PantallaSinConexionAInternet
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +45,9 @@ fun App(navController: NavHostController = rememberNavController()) {
                 }
                 composable(route = "catalogo") {
                     Catalogo(navController, textoTopBar)
+                }
+                composable(route = "sinConexionInternet/{accionReintento}") {
+                    PantallaSinConexionAInternet(navController, textoTopBar)
                 }
             }
         }

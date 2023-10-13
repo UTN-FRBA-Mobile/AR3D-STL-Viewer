@@ -20,9 +20,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.os.bundleOf
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.practica.arcore.ArCoreActivity
 import com.example.practica.repository.buscarObjetosVistosRecientemente
+import com.example.practica.utils.hayConexionAInternet
 import com.example.practica.utils.lanzarVistaPrevia
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -60,7 +63,13 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
             Text(text= "Seleccionar nuevo")
         }
         FilledTonalButton(
-            onClick = { navController.navigate("catalogo")},
+            onClick = {
+                if(hayConexionAInternet(context)) {
+                    navController.navigate("catalogo")
+                } else {
+                    navController.navigate("sinConexionInternet/reintentarIrACatalogo")
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp, 8.dp, 16.dp, 0.dp)
@@ -88,7 +97,6 @@ private fun managedActivityResultLauncher(
 ): ManagedActivityResultLauncher<String, Uri?> {
     val addFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
         if (it != null) {
-
             val inputStream = context.contentResolver.openInputStream(it)
 
             val stringBuilder = StringBuilder()

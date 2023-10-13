@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import com.example.practica.R
 import com.example.practica.repository.eliminarObjetoVistoRecientemente
 
-
 @Composable
 fun ListaObjetosRecientes(
     objetosVistosRecientemente: List<String>,
@@ -43,7 +42,7 @@ fun ListaObjetosRecientes(
     Box (
         modifier = Modifier
             .padding(0.dp, 0.dp, 0.dp, 0.dp)
-            .height(400.dp)) {
+            .height(430.dp)) {
         LazyColumn(
         ) {
             objetosVistosRecientemente?.let {
@@ -52,6 +51,7 @@ fun ListaObjetosRecientes(
                 }
             }
         }
+        MensajeSinConexionAInternet(350.dp)
     }
 }
 

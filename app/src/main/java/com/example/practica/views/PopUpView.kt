@@ -1,10 +1,18 @@
 package com.example.practica.views
 
+import android.content.Context
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavHostController
+import com.example.practica.repository.eliminarObjetoVistoRecientemente
+
 
 @Composable
 fun PopUp(

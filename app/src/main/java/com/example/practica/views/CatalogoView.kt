@@ -30,6 +30,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.practica.services.Objeto3d
 import com.example.practica.utils.convertirBase64ABitMap
+import com.example.practica.utils.hayConexionAInternet
 import com.example.practica.utils.lanzarVistaPrevia
 import com.example.practica.viewmodel.CatalogoViewModel
 
@@ -64,10 +65,11 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
         ) {
             catalogo.let {
                 items(it.size) { index ->
-                    CardObjeto3d(context, it[index])
+                    CardObjeto3d(navController, context, it[index])
                 }
             }
         }
+        if(!verPopUpError.value) MensajeSinConexionAInternet(540.dp)
     }
     PopUp(
         verPopUp = verPopUpError,
@@ -82,8 +84,8 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
 }
 
 @Composable
-fun CardObjeto3d(context: Context, objeto3d: Objeto3d) {
-    val objeto3dObj = remember { mutableStateOf("") }
+fun CardObjeto3d(navController: NavHostController, context: Context, objeto3d: Objeto3d, nombreObjetoArg: String = "") {
+    val objeto3dObj = remember { mutableStateOf(nombreObjetoArg) }
     val errorLanzarVistaPrevia = remember { mutableStateOf(false) }
 
     LaunchedEffect(objeto3dObj.value) {
@@ -114,7 +116,9 @@ fun CardObjeto3d(context: Context, objeto3d: Objeto3d) {
                     contentDescription = "contentDescription"
                 )
                 Button(
-                    onClick = { objeto3dObj.value = objeto3d.name },
+                    onClick = {
+                        objeto3dObj.value = objeto3d.name
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp, 0.dp, 16.dp, 16.dp)
@@ -124,6 +128,7 @@ fun CardObjeto3d(context: Context, objeto3d: Objeto3d) {
                 }
             }
         }
+
         PopUp(
             verPopUp = errorLanzarVistaPrevia,
             onConfirmation = {
@@ -131,7 +136,7 @@ fun CardObjeto3d(context: Context, objeto3d: Objeto3d) {
             },
             "Ok",
             dialogText = "Error al previsualizar el objeto, volvé a intentar",
-            dialogTitle = "Error"
+            dialogTitle = if(hayConexionAInternet(context)) "Error" else "Sin internet!"
         )
     }
 }

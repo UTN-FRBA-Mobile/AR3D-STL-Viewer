@@ -3,6 +3,8 @@ package com.example.practica.utils
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.util.Base64
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.ImageBitmap
@@ -44,4 +46,12 @@ fun convertirBase64ABitMap(base64: String): ImageBitmap {
     return BitmapFactory
         .decodeByteArray(decodedString, 0, decodedString.size)
         .asImageBitmap()
+}
+
+fun hayConexionAInternet(context: Context): Boolean {
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val network = connectivityManager.activeNetwork
+    val networkCapabilities = connectivityManager.getNetworkCapabilities(network)
+
+    return network != null && networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)!!
 }
