@@ -1,10 +1,6 @@
 package com.example.practica.views
 
 import android.content.Context
-import android.content.Intent
-import android.graphics.BitmapFactory
-import androidx.compose.ui.platform.LocalContext
-import android.util.Base64
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,55 +16,79 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.practica.arcore.ArCoreActivity
-import com.example.practica.repository.existeElArchivo
-import com.example.practica.repository.guardarArchivoEnAlmacenamientoExterno
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.practica.services.Objeto3d
-import com.example.practica.services.catalogoApiService
-
+import com.example.practica.utils.convertirBase64ABitMap
+import com.example.practica.utils.lanzarVistaPrevia
+import com.example.practica.viewmodel.CatalogoViewModel
 
 @Composable
-fun Catalogo(textoTopBar: MutableState<String>) {
+fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>) {
     val context = LocalContext.current
-    val objetos3d = remember { mutableStateOf<List<Objeto3d>?>(null) }
-    val cargandoCatalogo = remember { mutableStateOf(true) }
     textoTopBar.value = "Catálogo"
 
-    LaunchedEffect(1) {
-        objetos3d.value = catalogoApiService().getObjetos3d()
-        cargandoCatalogo.value = false
+    val catalogoViewModel: CatalogoViewModel = viewModel()
+    val catalogo by catalogoViewModel.catalogo.observeAsState(emptyList())
+    val error by catalogoViewModel.error.observeAsState(false)
+    val isLoadingCatalogo by catalogoViewModel.isLoading.observeAsState(true)
+
+    val verSpinnerCargandoCatalogo = remember { mutableStateOf(isLoadingCatalogo) }
+    val verPopUpError = remember { mutableStateOf(error) }
+
+    LaunchedEffect(catalogo) {
+        catalogoViewModel.getCatalogo()
+        verSpinnerCargandoCatalogo.value = isLoadingCatalogo
     }
 
-    if(cargandoCatalogo.value) {
+    LaunchedEffect(error) {
+        verPopUpError.value = error
+        verSpinnerCargandoCatalogo.value = isLoadingCatalogo
+    }
+
+    if(verSpinnerCargandoCatalogo.value) {
         Spinner()
     } else {
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
-            objetos3d.value?.let {
+            catalogo.let {
                 items(it.size) { index ->
-                    CardObjeto3d(context,it[index])
+                    CardObjeto3d(context, it[index])
                 }
             }
         }
     }
+    PopUp(
+        verPopUp = verPopUpError,
+        onConfirmation = {
+            verPopUpError.value = false
+            navController.popBackStack()
+        },
+        "Ok",
+        dialogText = "Error al obtener el catálogo, volvé a intentar",
+        dialogTitle = "Error"
+    )
 }
 
 @Composable
 fun CardObjeto3d(context: Context, objeto3d: Objeto3d) {
-    val objeto3dObj = remember { mutableStateOf<String>("") }
+    val objeto3dObj = remember { mutableStateOf("") }
+    val errorLanzarVistaPrevia = remember { mutableStateOf(false) }
 
     LaunchedEffect(objeto3dObj.value) {
-        lanzarVistaPrevia(context, objeto3dObj.value)
+        lanzarVistaPrevia(context, objeto3dObj.value, errorLanzarVistaPrevia)
+        objeto3dObj.value = ""
     }
 
     Card(
@@ -104,30 +124,14 @@ fun CardObjeto3d(context: Context, objeto3d: Objeto3d) {
                 }
             }
         }
+        PopUp(
+            verPopUp = errorLanzarVistaPrevia,
+            onConfirmation = {
+                errorLanzarVistaPrevia.value = false
+            },
+            "Ok",
+            dialogText = "Error al previsualizar el objeto, volvé a intentar",
+            dialogTitle = "Error"
+        )
     }
-}
-
-suspend fun lanzarVistaPrevia(
-    context: Context,
-    nombreObjeto3dObj: String
-) {
-    if(nombreObjeto3dObj != "") {
-        var nombreArchivoObjeto3dObj = "${nombreObjeto3dObj}.obj"
-
-        if(!existeElArchivo(context, nombreArchivoObjeto3dObj)) {
-            var objResponse: String = catalogoApiService().getObjetoPorNombre(nombreObjeto3dObj)
-            guardarArchivoEnAlmacenamientoExterno(context, nombreArchivoObjeto3dObj, objResponse)
-        }
-
-        var intentVisualizarEn3d = Intent(context, ArCoreActivity::class.java)
-        intentVisualizarEn3d.putExtra("nombreArchivoObjeto3dObj", nombreArchivoObjeto3dObj);
-        context.startActivity(intentVisualizarEn3d)
-    }
-}
-
-fun convertirBase64ABitMap(base64: String): ImageBitmap {
-    val decodedString: ByteArray = Base64.decode(base64, Base64.DEFAULT)
-    return BitmapFactory
-        .decodeByteArray(decodedString, 0, decodedString.size)
-        .asImageBitmap()
 }

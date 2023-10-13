@@ -11,16 +11,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.practica.R
+import com.example.practica.repository.eliminarObjetoVistoRecientemente
 
 
 @Composable
@@ -101,5 +96,16 @@ fun ObjetoReciente(nombreObjeto: String, context: Context, objetoEliminado: Muta
             }
         }
     }
-    PopUp(verPopUp, context, nombreObjeto, objetoEliminado)
+    PopUp(
+        verPopUp = verPopUp,
+        onConfirmation = {
+            verPopUp.value = false
+            objetoEliminado.value = eliminarObjetoVistoRecientemente(nombreObjeto, context)
+        },
+        onDismissRequest = { verPopUp.value = false },
+        textoConfirmation = "Si",
+        dialogTitle = "Eliminación",
+        dialogText = "Estás seguro que querés eliminar el objeto ${nombreObjeto}?",
+        textoDismiss = "No",
+    )
 }

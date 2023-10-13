@@ -1,53 +1,45 @@
 package com.example.practica.views
 
-import android.content.Context
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.ui.graphics.vector.ImageVector
-import com.example.practica.repository.eliminarObjetoVistoRecientemente
 
 @Composable
 fun PopUp(
     verPopUp: MutableState<Boolean>,
-    context: Context,
-    nombreObjeto: String,
-    objetoEliminado: MutableState<Boolean>
+    onConfirmation: () -> Unit,
+    textoConfirmation: String,
+    dialogTitle: String,
+    dialogText: String,
+    onDismissRequest: () -> Unit = {},
+    textoDismiss: String = ""
 ) {
     when {
         verPopUp.value -> {
-            AlertDialogExample(
-                onDismissRequest = { verPopUp.value = false },
-                onConfirmation = {
-                    verPopUp.value = false
-                    val archivoEliminado = eliminarObjetoVistoRecientemente(nombreObjeto, context)
-                    objetoEliminado.value = archivoEliminado
-                },
-                dialogTitle = "Eliminación",
-                dialogText = "Estás seguro que querés eliminar el objeto ${nombreObjeto}?",
-                icon = Icons.Default.Info
+            AlertDialog(
+                onDismissRequest = {onDismissRequest()},
+                onConfirmation = {onConfirmation()},
+                textoConfirmation = textoConfirmation,
+                textoDismiss = textoDismiss,
+                dialogTitle = dialogTitle,
+                dialogText = dialogText
             )
         }
     }
 }
 
 @Composable
-fun AlertDialogExample(
-    onDismissRequest: () -> Unit,
+fun AlertDialog(
+    onDismissRequest: () -> Unit?,
     onConfirmation: () -> Unit,
+    textoConfirmation: String,
+    textoDismiss: String,
     dialogTitle: String,
     dialogText: String,
-    icon: ImageVector,
 ) {
     AlertDialog(
-        icon = {
-            Icon(icon, contentDescription = "Example Icon")
-        },
         title = {
             Text(text = dialogTitle)
         },
@@ -63,16 +55,18 @@ fun AlertDialogExample(
                     onConfirmation()
                 }
             ) {
-                Text("Si")
+                Text(textoConfirmation)
             }
         },
         dismissButton = {
-            TextButton(
-                onClick = {
-                    onDismissRequest()
+            if(textoDismiss != "") {
+                TextButton(
+                    onClick = {
+                        onDismissRequest()
+                    }
+                ) {
+                    Text(textoDismiss)
                 }
-            ) {
-                Text("No")
             }
         }
     )

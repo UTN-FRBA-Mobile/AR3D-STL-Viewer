@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.practica.arcore.ArCoreActivity
 import com.example.practica.repository.buscarObjetosVistosRecientemente
+import com.example.practica.utils.lanzarVistaPrevia
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,8 +34,10 @@ import java.io.InputStreamReader
 fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
     val context = LocalContext.current
     val objetosVistosRecientemente = remember { mutableStateOf<List<String>>(emptyList()) }
-    val objetoEliminado = remember { mutableStateOf<Boolean>(false) }
-    val addFileLauncher = managedActivityResultLauncher(context, objetosVistosRecientemente)
+    val objetoEliminado = remember { mutableStateOf(false) }
+    val errorLanzarVistaPrevia = remember { mutableStateOf(false) }
+
+    val addFileLauncher = managedActivityResultLauncher(context, objetosVistosRecientemente, errorLanzarVistaPrevia)
     textoTopBar.value = "Bienvenido"
 
     LaunchedEffect(1, objetoEliminado.value) {
@@ -65,13 +68,23 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
             Text(text = "Buscar en catálogo")
         }
         ListaObjetosRecientes(objetosVistosRecientemente.value, context, objetoEliminado)
+        PopUp(
+            verPopUp = errorLanzarVistaPrevia,
+            onConfirmation = {
+                errorLanzarVistaPrevia.value = false
+            },
+            "Ok",
+            dialogText = "Error al previsualizar el objeto, volvé a intentar",
+            dialogTitle = "Error"
+        )
     }
 }
 
 @Composable
 private fun managedActivityResultLauncher(
     context: Context,
-    objetosVistosRecientemente: MutableState<List<String>>
+    objetosVistosRecientemente: MutableState<List<String>>,
+    errorLanzarVistaPrevia: MutableState<Boolean>
 ): ManagedActivityResultLauncher<String, Uri?> {
     val addFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
         if (it != null) {
@@ -90,14 +103,14 @@ private fun managedActivityResultLauncher(
             val fileText = stringBuilder.toString()
 
             val corutinaLanzarVistaPrevia = CoroutineScope(Dispatchers.Default).launch {
-                lanzarVistaPrevia(context, fileText)
+                lanzarVistaPrevia(context, fileText, errorLanzarVistaPrevia)
             }
 
             corutinaLanzarVistaPrevia.invokeOnCompletion { causa ->
                 if(causa == null) {
                     objetosVistosRecientemente.value = buscarObjetosVistosRecientemente(context)
                 } else {
-                    // hacer algo por si la corutina falla
+                    errorLanzarVistaPrevia.value = true
                 }
             }
 

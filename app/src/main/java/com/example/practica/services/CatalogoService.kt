@@ -15,11 +15,11 @@ interface CatalogoApiService {
     suspend fun getObjetos3d(): List<Objeto3d>
 
     @GET("/catalogo")
-    suspend fun getObjetoPorNombre(@Query("name") name: String): String
+    suspend fun getObjetoPorNombre(@Query("names") name: String): String
 }
 
 fun catalogoApiService(): CatalogoApiService {
-    val BASE_URL = "https://a76fc146-5bc5-4856-8f12-d03f4aee4bbe.mock.pstmn.io"
+    val BASE_URL = "https://cc9c5264-8d0c-4160-9104-4da34d073a89.mock.pstmn.io"
 
     val retrofit = Retrofit
         .Builder()
