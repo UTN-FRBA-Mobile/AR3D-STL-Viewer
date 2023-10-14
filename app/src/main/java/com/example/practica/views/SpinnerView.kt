@@ -34,6 +34,6 @@ fun SpinnerButton() {
     CircularProgressIndicator(
         modifier = Modifier
             .padding(top = 0.dp, bottom = 0.dp)
-            .size(26.dp),
+            .size(23.dp),
         color = Color.White)
 }
