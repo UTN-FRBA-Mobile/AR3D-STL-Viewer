@@ -1,6 +1,7 @@
 package com.example.practica.views
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.zIndex
@@ -37,12 +39,13 @@ fun MensajeSinConexionAInternet() {
 @Composable
 fun ToastSinInternet(toastVisible: MutableState<Boolean>) {
     Box(modifier =  Modifier
-        .offset(0.dp, 540.dp)
+        .fillMaxSize()
         .zIndex(1f)
     ) {
         Snackbar(
             modifier = Modifier
-                .padding(16.dp),
+                .padding(16.dp)
+                .align(Alignment.BottomCenter),
             contentColor = Color.White,
             containerColor = Color.Red,
             action = {

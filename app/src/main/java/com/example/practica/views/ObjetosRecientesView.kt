@@ -42,6 +42,7 @@ fun ListaObjetosRecientes(
     Box (
         modifier = Modifier
             .padding(0.dp, 8.dp, 0.dp, 0.dp)
+            .fillMaxSize()
             .height(430.dp)) {
         LazyColumn() {
             objetosVistosRecientemente?.let {
