@@ -69,7 +69,6 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
                 }
             }
         }
-        if(!verPopUpError.value) MensajeSinConexionAInternet(540.dp)
     }
     PopUp(
         verPopUp = verPopUpError,

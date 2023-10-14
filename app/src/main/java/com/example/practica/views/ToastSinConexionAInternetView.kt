@@ -1,10 +1,7 @@
 package com.example.practica.views
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.absolutePadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.material3.*
@@ -17,13 +14,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.zIndex
 import com.example.practica.R
 import com.example.practica.utils.hayConexionAInternet
 import kotlinx.coroutines.delay
 
 @Composable
-fun MensajeSinConexionAInternet(paddingTop: Dp) {
+fun MensajeSinConexionAInternet() {
     val context = LocalContext.current
     val toastVisible = remember { mutableStateOf(false) }
 
@@ -33,15 +30,15 @@ fun MensajeSinConexionAInternet(paddingTop: Dp) {
     }
 
     if(toastVisible.value) {
-        ToastSinInternet(toastVisible, paddingTop)
+        ToastSinInternet(toastVisible)
     }
 }
 
 @Composable
-fun ToastSinInternet(toastVisible: MutableState<Boolean>, paddingTop: Dp) {
-    Box(
-        modifier = Modifier
-            .absolutePadding(top = paddingTop)
+fun ToastSinInternet(toastVisible: MutableState<Boolean>) {
+    Box(modifier =  Modifier
+        .offset(0.dp, 540.dp)
+        .zIndex(1f)
     ) {
         Snackbar(
             modifier = Modifier

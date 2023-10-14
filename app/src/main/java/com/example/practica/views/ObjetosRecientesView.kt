@@ -41,17 +41,15 @@ fun ListaObjetosRecientes(
     )
     Box (
         modifier = Modifier
-            .padding(0.dp, 0.dp, 0.dp, 0.dp)
+            .padding(0.dp, 8.dp, 0.dp, 0.dp)
             .height(430.dp)) {
-        LazyColumn(
-        ) {
+        LazyColumn() {
             objetosVistosRecientemente?.let {
                 items(it.size) { index ->
                     ObjetoReciente(it[index], context, objetoEliminado)
                 }
             }
         }
-        MensajeSinConexionAInternet(350.dp)
     }
 }
 

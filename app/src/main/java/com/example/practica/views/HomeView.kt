@@ -20,8 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.os.bundleOf
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.practica.arcore.ArCoreActivity
 import com.example.practica.repository.buscarObjetosVistosRecientemente
@@ -87,6 +85,7 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
             dialogTitle = "Error"
         )
     }
+    MensajeSinConexionAInternet()
 }
 
 @Composable
