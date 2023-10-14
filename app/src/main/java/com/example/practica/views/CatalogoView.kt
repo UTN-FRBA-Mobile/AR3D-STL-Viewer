@@ -65,7 +65,7 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
         ) {
             catalogo.let {
                 items(it.size) { index ->
-                    CardObjeto3d(navController, context, it[index])
+                    CardObjeto3d(context, it[index])
                 }
             }
         }
@@ -83,13 +83,15 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
 }
 
 @Composable
-fun CardObjeto3d(navController: NavHostController, context: Context, objeto3d: Objeto3d, nombreObjetoArg: String = "") {
-    val objeto3dObj = remember { mutableStateOf(nombreObjetoArg) }
+fun CardObjeto3d(context: Context, objeto3d: Objeto3d) {
+    val cargandoVistaPrevia = remember { mutableStateOf(false) }
+    val objeto3dObj = remember { mutableStateOf("") }
     val errorLanzarVistaPrevia = remember { mutableStateOf(false) }
 
     LaunchedEffect(objeto3dObj.value) {
         lanzarVistaPrevia(context, objeto3dObj.value, errorLanzarVistaPrevia)
         objeto3dObj.value = ""
+        cargandoVistaPrevia.value = false
     }
 
     Card(
@@ -116,6 +118,7 @@ fun CardObjeto3d(navController: NavHostController, context: Context, objeto3d: O
                 )
                 Button(
                     onClick = {
+                        cargandoVistaPrevia.value = true
                         objeto3dObj.value = objeto3d.name
                     },
                     modifier = Modifier
@@ -123,7 +126,8 @@ fun CardObjeto3d(navController: NavHostController, context: Context, objeto3d: O
                         .padding(16.dp, 0.dp, 16.dp, 16.dp)
                         .align(Alignment.CenterHorizontally)
                 ) {
-                    Text(text = "Previsualizar")
+                    if(cargandoVistaPrevia.value) SpinnerButton()
+                    else Text(text = "Previsualizar")
                 }
             }
         }
