@@ -45,7 +45,7 @@ fun ListaObjetosRecientes(
             .fillMaxSize()
             .height(430.dp)) {
         LazyColumn() {
-            objetosVistosRecientemente?.let {
+            objetosVistosRecientemente.let {
                 items(it.size) { index ->
                     ObjetoReciente(it[index], context, objetoEliminado)
                 }
@@ -78,7 +78,6 @@ fun ObjetoReciente(nombreObjeto: String, context: Context, objetoEliminado: Muta
                     Icon(
                         Icons.Rounded.PlayArrow,
                         contentDescription = stringResource(id = R.string.visualizar_objeto_reciente),
-                        tint = Color.Black
                     )
                 }
                 ElevatedButton(
