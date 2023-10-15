@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -36,14 +36,13 @@ fun ListaObjetosRecientes(
 ) {
     Text(
         modifier = Modifier
-            .padding(16.dp, 50.dp, 0.dp, 0.dp),
+            .padding(16.dp, 32.dp, 0.dp, 0.dp),
         text = if(objetosVistosRecientemente.size > 0) "Objetos vistos recientemente" else ""
     )
     Box (
         modifier = Modifier
             .padding(0.dp, 8.dp, 0.dp, 0.dp)
-            .fillMaxSize()
-            .height(430.dp)) {
+            .fillMaxHeight()) {
         LazyColumn() {
             objetosVistosRecientemente.let {
                 items(it.size) { index ->
@@ -69,7 +68,7 @@ fun ObjetoReciente(nombreObjeto: String, context: Context, objetoEliminado: Muta
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = nombreObjeto, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 8.dp))
+            Text(text = eliminarExtensionObj(nombreObjeto), fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 8.dp))
             Box {
                 ElevatedButton(
                     modifier = Modifier,
@@ -106,4 +105,8 @@ fun ObjetoReciente(nombreObjeto: String, context: Context, objetoEliminado: Muta
         dialogText = "Estás seguro que querés eliminar el objeto ${nombreObjeto}?",
         textoDismiss = "No",
     )
+}
+
+fun eliminarExtensionObj(nombreArchivoObj: String): String {
+    return nombreArchivoObj.removeSuffix(".obj")
 }

@@ -8,7 +8,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Text
@@ -48,31 +48,36 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
 
     Column(
         modifier = Modifier,
-        verticalArrangement = Arrangement.Top
     ) {
-        FilledTonalButton(
-            onClick = {
-                addFileLauncher.launch("*/*")
-            },
+        Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp, 16.dp, 16.dp, 0.dp)
+                .padding(start = 16.dp, top = 16.dp, end= 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text= "Seleccionar nuevo")
-        }
-        FilledTonalButton(
-            onClick = {
-                if(hayConexionAInternet(context)) {
-                    navController.navigate("catalogo")
-                } else {
-                    navController.navigate("sinConexionInternet/reintentarIrACatalogo")
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp, 8.dp, 16.dp, 0.dp)
-        ) {
-            Text(text = "Buscar en catálogo")
+            FilledTonalButton(
+                onClick = {
+                    addFileLauncher.launch("*/*")
+                },
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .weight(1f)
+            ) {
+                Text(text = "Subir .stl")
+            }
+            FilledTonalButton(
+                onClick = {
+                    if (hayConexionAInternet(context)) {
+                        navController.navigate("catalogo")
+                    } else {
+                        navController.navigate("sinConexionInternet/reintentarIrACatalogo")
+                    }
+                },
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .weight(1f)
+            ) {
+                Text(text = "Descargar .stl")
+            }
         }
         ListaObjetosRecientes(objetosVistosRecientemente.value, context, objetoEliminado)
         PopUp(
