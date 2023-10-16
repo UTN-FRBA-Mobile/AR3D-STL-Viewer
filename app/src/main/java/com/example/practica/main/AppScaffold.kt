@@ -47,8 +47,7 @@ fun AppScaffold(textoTopBar: String, navController: NavController, content: @Com
             },
             content = {
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     content(it)
                 }

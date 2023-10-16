@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -105,13 +106,6 @@ fun CardObjeto3d(context: Context, objeto3d: Objeto3d, ultimoElemento: Boolean =
             .fillMaxWidth()
             .padding(16.dp, 16.dp, 16.dp, 0.dp)
     ) {
-        Text(
-            text = objeto3d.name,
-            fontSize = 24.sp,
-            modifier = Modifier
-                .padding(16.dp),
-            textAlign = TextAlign.Center
-        )
         Box() {
             Column(
                 modifier = Modifier
@@ -119,9 +113,22 @@ fun CardObjeto3d(context: Context, objeto3d: Objeto3d, ultimoElemento: Boolean =
                     .align(Alignment.CenterStart)
             ) {
                 Image(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                        .align(Alignment.CenterHorizontally),
                     bitmap = convertirBase64ABitMap(objeto3d.img),
                     contentDescription = "contentDescription"
+                )
+                Text(
+                    text = objeto3d.name,
+                    fontSize = 22.sp,
+                    modifier = Modifier
+                        .padding(16.dp, 0.dp, 16.dp, 16.dp),
+                    textAlign = TextAlign.Center
+                )
+                Divider(
+                    modifier = Modifier
+                        .padding(16.dp, 0.dp, 16.dp, 16.dp)
                 )
                 Row(
                     modifier = Modifier.fillMaxSize(),
@@ -153,7 +160,6 @@ fun CardObjeto3d(context: Context, objeto3d: Objeto3d, ultimoElemento: Boolean =
                 }
             }
         }
-
         PopUp(
             verPopUp = errorLanzarVistaPrevia,
             onConfirmation = {

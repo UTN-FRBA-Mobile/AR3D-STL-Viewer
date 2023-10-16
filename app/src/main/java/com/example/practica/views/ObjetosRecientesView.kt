@@ -102,7 +102,7 @@ fun ObjetoReciente(nombreObjeto: String, context: Context, objetoEliminado: Muta
         onDismissRequest = { verPopUp.value = false },
         textoConfirmation = "Si",
         dialogTitle = "Eliminación",
-        dialogText = "Estás seguro que querés eliminar el objeto ${nombreObjeto}?",
+        dialogText = "Estás seguro que querés eliminar el objeto ${eliminarExtensionObj(nombreObjeto)}?",
         textoDismiss = "No",
     )
 }
