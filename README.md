@@ -19,7 +19,7 @@ Aplicación para visualizar objetos en realidad aumentada y ver como quedaría e
 
 ### Para agregar un objeto al catálogo, seguir estos pasos:
 
-1. Bajar una imagen png
+1. Bajar una imagen png o webp, si está en png continuar con el paso 2 para reducir el tamaño.
 
 2. Convertirla a webp con https://cloudconvert.com/
 
