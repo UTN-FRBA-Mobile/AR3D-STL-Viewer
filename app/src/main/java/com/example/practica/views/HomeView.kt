@@ -6,11 +6,12 @@ import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -47,39 +48,29 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
     }
 
     Column(
-        modifier = Modifier,
+        modifier = Modifier
     ) {
-        Row(
+        Column(
             modifier = Modifier
-                .padding(start = 16.dp, top = 16.dp, end= 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .fillMaxSize()
+                .padding(start = 16.dp, top = 16.dp, end = 16.dp),
         ) {
-            FilledTonalButton(
-                onClick = {
-                    addFileLauncher.launch("*/*")
-                },
-                modifier = Modifier
-                    .padding(end = 8.dp)
-                    .weight(1f)
-            ) {
-                Text(text = "Subir .stl")
-            }
-            FilledTonalButton(
-                onClick = {
-                    if (hayConexionAInternet(context)) {
-                        navController.navigate("catalogo")
-                    } else {
-                        navController.navigate("sinConexionInternet/reintentarIrACatalogo")
-                    }
-                },
-                modifier = Modifier
-                    .padding(start = 8.dp)
-                    .weight(1f)
-            ) {
-                Text(text = "Descargar .stl")
-            }
+            BotonConDescripcion(
+                { addFileLauncher.launch("*/*")},
+                "Buscar archivo",
+                "Busca en tu dispositivo un archivo con extensión .stl para visualizarlo en realidad aumentada."
+            )
+            BotonConDescripcion(
+                {if (hayConexionAInternet(context)) {
+                    navController.navigate("catalogo")
+                } else {
+                    navController.navigate("sinConexionInternet/reintentarIrACatalogo")
+                }},
+                "Catálogo",
+                "Busca en nuestro catálogo de objetos 3D el que mas te guste y descarga su archivo .stl"
+            )
+            ListaObjetosRecientes(objetosVistosRecientemente.value, context, objetoEliminado)
         }
-        ListaObjetosRecientes(objetosVistosRecientemente.value, context, objetoEliminado)
         PopUp(
             verPopUp = errorLanzarVistaPrevia,
             onConfirmation = {
@@ -91,6 +82,26 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
         )
     }
     MensajeSinConexionAInternet()
+}
+
+@Composable
+fun BotonConDescripcion(onClick: () -> Unit, textoBoton: String, descripcion: String) {
+    Card(
+        modifier = Modifier.padding(bottom = 8.dp)
+    ) {
+        Text(
+            text = descripcion,
+            Modifier.padding(16.dp)
+        )
+        Button(
+            onClick = {onClick()},
+            modifier = Modifier
+                .padding(16.dp, 0.dp, 16.dp, 16.dp)
+                .fillMaxWidth()
+        ) {
+            Text(text = textoBoton)
+        }
+    }
 }
 
 @Composable

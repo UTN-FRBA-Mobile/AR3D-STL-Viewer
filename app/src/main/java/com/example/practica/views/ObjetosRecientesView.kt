@@ -36,7 +36,7 @@ fun ListaObjetosRecientes(
 ) {
     Text(
         modifier = Modifier
-            .padding(16.dp, 32.dp, 0.dp, 0.dp),
+            .padding(0.dp, 16.dp, 0.dp, 0.dp),
         text = if(objetosVistosRecientemente.size > 0) "Objetos vistos recientemente" else ""
     )
     Box (
@@ -59,7 +59,7 @@ fun ObjetoReciente(nombreObjeto: String, context: Context, objetoEliminado: Muta
     Card(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp, 8.dp, 16.dp, 8.dp)
+            .padding(0.dp, 4.dp, 0.dp, 4.dp)
     ) {
         Row(
             modifier = Modifier
