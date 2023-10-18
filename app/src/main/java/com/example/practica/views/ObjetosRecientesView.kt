@@ -10,11 +10,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material3.Card
-import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -37,7 +36,7 @@ fun ListaObjetosRecientes(
     Text(
         modifier = Modifier
             .padding(0.dp, 16.dp, 0.dp, 0.dp),
-        text = if(objetosVistosRecientemente.size > 0) "Objetos vistos recientemente" else ""
+        text = if(objetosVistosRecientemente.size > 0) "Últimas visualizaciones" else ""
     )
     Box (
         modifier = Modifier
@@ -56,43 +55,39 @@ fun ListaObjetosRecientes(
 @Composable
 fun ObjetoReciente(nombreObjeto: String, context: Context, objetoEliminado: MutableState<Boolean>) {
     val verPopUp = remember { mutableStateOf(false) }
-    Card(
+    Divider()
+    Row(
         modifier = Modifier
             .fillMaxSize()
-            .padding(0.dp, 4.dp, 0.dp, 4.dp)
+            .padding(0.dp, 4.dp, 0.dp, 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp, 0.dp, 8.dp, 0.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = eliminarExtensionObj(nombreObjeto), fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 8.dp))
-            Box {
-                ElevatedButton(
-                    modifier = Modifier,
-                    onClick = {lanzarVistaPreviaObjetoReciente(context, nombreObjeto)}
-                ) {
-                    Icon(
-                        Icons.Rounded.PlayArrow,
-                        contentDescription = stringResource(id = R.string.visualizar_objeto_reciente),
-                    )
-                }
-                ElevatedButton(
-                    modifier = Modifier
-                        .padding(78.dp, 0.dp, 0.dp, 0.dp),
-                    onClick = { verPopUp.value = true }
-                ) {
-                    Icon(
-                        Icons.Rounded.Delete,
-                        contentDescription = stringResource(id = R.string.eliminacion_objeto_visto),
-                        tint = Color.Red
-                    )
-                }
+        Text(
+            text = eliminarExtensionObj(nombreObjeto),
+            fontWeight = FontWeight.Bold
+        )
+        Box {
+            TextButton(
+                modifier = Modifier,
+                onClick = { lanzarVistaPreviaObjetoReciente(context, nombreObjeto) }
+            ) {
+                Text(text = "Ver")
+            }
+            TextButton(
+                modifier = Modifier
+                    .padding(60.dp, 0.dp, 0.dp, 0.dp),
+                onClick = { verPopUp.value = true }
+            ) {
+                Icon(
+                    Icons.Rounded.Delete,
+                    contentDescription = stringResource(id = R.string.eliminacion_objeto_visto),
+                    tint = Color.Red
+                )
             }
         }
     }
+
     PopUp(
         verPopUp = verPopUp,
         onConfirmation = {

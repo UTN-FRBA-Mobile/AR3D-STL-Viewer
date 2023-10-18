@@ -13,6 +13,7 @@ import com.example.practica.arcore.ArCoreActivity
 import com.example.practica.repository.existeElArchivo
 import com.example.practica.repository.guardarArchivoEnAlmacenamientoExterno
 import com.example.practica.services.catalogoApiService
+import java.io.File
 import java.lang.Exception
 
 suspend fun lanzarVistaPrevia(
@@ -54,4 +55,14 @@ fun hayConexionAInternet(context: Context): Boolean {
     val networkCapabilities = connectivityManager.getNetworkCapabilities(network)
 
     return network != null && networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)!!
+}
+fun ordenarArchivos(files: Array<File>) {
+    files.sortWith(Comparator { unArchivo, otroArchivo ->
+        val diferenciaEntreCreacionArchivos = unArchivo.lastModified() - otroArchivo.lastModified()
+        when {
+            diferenciaEntreCreacionArchivos < 0 -> 1
+            diferenciaEntreCreacionArchivos > 0 -> -1
+            else -> 0
+        }
+    })
 }

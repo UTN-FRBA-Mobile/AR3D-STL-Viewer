@@ -23,7 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.practica.arcore.ArCoreActivity
-import com.example.practica.repository.buscarObjetosVistosRecientemente
+import com.example.practica.repository.buscarObjetosVistosRecientementeEnOrdenUltimaVisualizacion
 import com.example.practica.utils.hayConexionAInternet
 import com.example.practica.utils.lanzarVistaPrevia
 import kotlinx.coroutines.CoroutineScope
@@ -43,7 +43,7 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
     textoTopBar.value = "Bienvenido"
 
     LaunchedEffect(1, objetoEliminado.value) {
-        objetosVistosRecientemente.value = buscarObjetosVistosRecientemente(context)
+        objetosVistosRecientemente.value = buscarObjetosVistosRecientementeEnOrdenUltimaVisualizacion(context)
         objetoEliminado.value = false
     }
 
@@ -131,7 +131,7 @@ private fun managedActivityResultLauncher(
 
             corutinaLanzarVistaPrevia.invokeOnCompletion { causa ->
                 if(causa == null) {
-                    objetosVistosRecientemente.value = buscarObjetosVistosRecientemente(context)
+                    objetosVistosRecientemente.value = buscarObjetosVistosRecientementeEnOrdenUltimaVisualizacion(context)
                 } else {
                     errorLanzarVistaPrevia.value = true
                 }

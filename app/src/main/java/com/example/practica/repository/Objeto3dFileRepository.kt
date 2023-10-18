@@ -1,6 +1,7 @@
 package com.example.practica.repository
 
 import android.content.Context
+import com.example.practica.utils.ordenarArchivos
 import java.io.File
 import java.io.FileOutputStream
 
@@ -26,13 +27,14 @@ suspend fun guardarArchivoEnAlmacenamientoExterno(context: Context, nombreArchiv
     outputStream.write(contenido.toByteArray())
     outputStream.close()
 }
-fun buscarObjetosVistosRecientemente(context: Context): List<String> {
+fun buscarObjetosVistosRecientementeEnOrdenUltimaVisualizacion(context: Context): List<String> {
     val nombresDeArchivos = mutableListOf<String>()
 
     val directorio = context.getExternalFilesDir(null)
 
     if (directorio != null && directorio.exists() && directorio.isDirectory) {
-        val archivos = directorio.listFiles()
+        val archivos: Array<File> = directorio.listFiles()
+        ordenarArchivos(archivos)
         if (archivos != null) {
             for (archivo in archivos) {
                 if (archivo.isFile) {
