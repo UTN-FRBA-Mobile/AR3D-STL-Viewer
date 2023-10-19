@@ -48,7 +48,7 @@ fun PantallaSinConexionAInternet(
             ) {
                 Icon(
                     Icons.Rounded.Warning,
-                    contentDescription = stringResource(id = R.string.eliminacion_objeto_visto),
+                    contentDescription = stringResource(id = R.string.waring_sin_internet),
                     tint = Color.Gray,
                     modifier = Modifier.size(200.dp)
                 )

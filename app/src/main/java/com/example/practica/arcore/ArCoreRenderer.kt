@@ -191,11 +191,11 @@ class ArCoreRenderer(val activity: ArCoreActivity) :
       // Point cloud
       pointCloudShader =
         Shader.createFromAssets(
-            render,
-            "shaders/point_cloud.vert",
-            "shaders/point_cloud.frag",
-            /*defines=*/ null
-          )
+          render,
+          "shaders/point_cloud.vert",
+          "shaders/point_cloud.frag",
+          /*defines=*/ null
+        )
           .setVec4("u_Color", floatArrayOf(31.0f / 255.0f, 188.0f / 255.0f, 210.0f / 255.0f, 1.0f))
           .setFloat("u_PointSize", 5.0f)
 
@@ -233,11 +233,11 @@ class ArCoreRenderer(val activity: ArCoreActivity) :
       virtualObjectMesh = Mesh.createFromAsset(render)
       virtualObjectShader =
         Shader.createFromAssets(
-            render,
-            "shaders/environmental_hdr.vert",
-            "shaders/environmental_hdr.frag",
-            mapOf("NUMBER_OF_MIPMAP_LEVELS" to cubemapFilter.numberOfMipmapLevels.toString())
-          )
+          render,
+          "shaders/environmental_hdr.vert",
+          "shaders/environmental_hdr.frag",
+          mapOf("NUMBER_OF_MIPMAP_LEVELS" to cubemapFilter.numberOfMipmapLevels.toString())
+        )
           .setTexture("u_AlbedoTexture", virtualObjectAlbedoTexture)
           .setTexture("u_RoughnessMetallicAmbientOcclusionTexture", virtualObjectPbrTexture)
           .setTexture("u_Cubemap", cubemapFilter.filteredCubemapTexture)
@@ -302,7 +302,7 @@ class ArCoreRenderer(val activity: ArCoreActivity) :
     backgroundRenderer.updateDisplayGeometry(frame)
     val shouldGetDepthImage =
       activity.depthSettings.useDepthForOcclusion() ||
-        activity.depthSettings.depthColorVisualizationEnabled()
+              activity.depthSettings.depthColorVisualizationEnabled()
     if (camera.trackingState == TrackingState.TRACKING && shouldGetDepthImage) {
       try {
         val depthImage = frame.acquireDepthImage16Bits()
@@ -325,7 +325,7 @@ class ArCoreRenderer(val activity: ArCoreActivity) :
     val message: String? =
       when {
         camera.trackingState == TrackingState.PAUSED &&
-          camera.trackingFailureReason == TrackingFailureReason.NONE ->
+                camera.trackingFailureReason == TrackingFailureReason.NONE ->
           activity.getString(R.string.searching_planes)
         camera.trackingState == TrackingState.PAUSED ->
           TrackingStateHelper.getTrackingFailureReasonString(camera)
@@ -385,7 +385,7 @@ class ArCoreRenderer(val activity: ArCoreActivity) :
     // Visualize anchors created by touch.
     render.clear(virtualSceneFramebuffer, 0f, 0f, 0f, 0f)
     for ((anchor, trackable) in
-      wrappedAnchors.filter { it.anchor.trackingState == TrackingState.TRACKING }) {
+    wrappedAnchors.filter { it.anchor.trackingState == TrackingState.TRACKING }) {
       // Get the current pose of an Anchor in world space. The Anchor pose is updated
       // during calls to session.update() as ARCore refines its estimate of the world.
       anchor.pose.toMatrix(modelMatrix, 0)
@@ -399,7 +399,7 @@ class ArCoreRenderer(val activity: ArCoreActivity) :
       virtualObjectShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix)
       val texture =
         if ((trackable as? InstantPlacementPoint)?.trackingMethod ==
-            InstantPlacementPoint.TrackingMethod.SCREENSPACE_WITH_APPROXIMATE_DISTANCE
+          InstantPlacementPoint.TrackingMethod.SCREENSPACE_WITH_APPROXIMATE_DISTANCE
         ) {
           virtualObjectAlbedoInstantPlacementTexture
         } else {
@@ -496,7 +496,7 @@ class ArCoreRenderer(val activity: ArCoreActivity) :
         when (val trackable = hit.trackable!!) {
           is Plane ->
             trackable.isPoseInPolygon(hit.hitPose) &&
-              PlaneRenderer.calculateDistanceToPlane(hit.hitPose, camera.pose) > 0
+                    PlaneRenderer.calculateDistanceToPlane(hit.hitPose, camera.pose) > 0
           is Point -> trackable.orientationMode == Point.OrientationMode.ESTIMATED_SURFACE_NORMAL
           is InstantPlacementPoint -> true
           // DepthPoints are only returned if Config.DepthMode is set to AUTOMATIC.
@@ -508,15 +508,13 @@ class ArCoreRenderer(val activity: ArCoreActivity) :
     if (firstHitResult != null) {
       // Cap the number of objects created. This avoids overloading both the
       // rendering system and ARCore.
-      if (wrappedAnchors.size >= 20) {
-        wrappedAnchors[0].anchor.detach()
-        wrappedAnchors.removeAt(0)
+      if (wrappedAnchors.size == 0) {
+        wrappedAnchors.add(WrappedAnchor(firstHitResult.createAnchor(), firstHitResult.trackable))
       }
 
       // Adding an Anchor tells ARCore that it should track this position in
       // space. This anchor is created on the Plane to place the 3D model
       // in the correct position relative both to the world and to the plane.
-      wrappedAnchors.add(WrappedAnchor(firstHitResult.createAnchor(), firstHitResult.trackable))
 
       // For devices that support the Depth API, shows a dialog to suggest enabling
       // depth-based occlusion. This dialog needs to be spawned on the UI thread.

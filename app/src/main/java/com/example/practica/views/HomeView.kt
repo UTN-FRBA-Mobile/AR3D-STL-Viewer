@@ -39,70 +39,63 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
     val objetoEliminado = remember { mutableStateOf(false) }
     val errorLanzarVistaPrevia = remember { mutableStateOf(false) }
 
-    val addFileLauncher = managedActivityResultLauncher(context, objetosVistosRecientemente, errorLanzarVistaPrevia)
+    val addFileLauncher =
+        managedActivityResultLauncher(context, objetosVistosRecientemente, errorLanzarVistaPrevia)
     textoTopBar.value = "Bienvenido"
 
     LaunchedEffect(1, objetoEliminado.value) {
-        objetosVistosRecientemente.value = buscarObjetosVistosRecientementeEnOrdenUltimaVisualizacion(context)
+        objetosVistosRecientemente.value =
+            buscarObjetosVistosRecientementeEnOrdenUltimaVisualizacion(context)
         objetoEliminado.value = false
     }
 
     Column(
         modifier = Modifier
+            .fillMaxSize()
+            .padding(start = 16.dp, top = 16.dp, end = 16.dp),
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-        ) {
-            BotonConDescripcion(
-                { addFileLauncher.launch("*/*")},
-                "Buscar archivo",
-                "Busca en tu dispositivo un archivo con extensión .stl para visualizarlo en realidad aumentada."
+        Card {
+            Text(
+                text = "Subí tu archivo .STL o buscá en nuestro catálogo para verlo en realidad aumentada",
+                Modifier.padding(16.dp)
             )
-            BotonConDescripcion(
-                {if (hayConexionAInternet(context)) {
+        }
+        Button(
+            onClick = { addFileLauncher.launch("*/*") },
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .fillMaxWidth()
+        ) {
+            Text(text = "Buscar archivo")
+        }
+        Button(
+            onClick = {
+                if (hayConexionAInternet(context)) {
                     navController.navigate("catalogo")
                 } else {
                     navController.navigate("sinConexionInternet/reintentarIrACatalogo")
-                }},
-                "Catálogo",
-                "Busca en nuestro catálogo de objetos 3D el que mas te guste y descarga su archivo .stl"
-            )
-            ListaObjetosRecientes(objetosVistosRecientemente.value, context, objetoEliminado)
-        }
-        PopUp(
-            verPopUp = errorLanzarVistaPrevia,
-            onConfirmation = {
-                errorLanzarVistaPrevia.value = false
+                }
             },
-            "Ok",
-            dialogText = "Error al previsualizar el objeto, volvé a intentar",
-            dialogTitle = "Error"
-        )
+            modifier = Modifier
+                .padding(top = 12.dp)
+                .fillMaxWidth()
+        ) {
+            Text(text = "Catálogo")
+        }
+        ListaObjetosRecientes(objetosVistosRecientemente.value, context, objetoEliminado)
     }
+    PopUp(
+        verPopUp = errorLanzarVistaPrevia,
+        onConfirmation = {
+            errorLanzarVistaPrevia.value = false
+        },
+        "Ok",
+        dialogText = "Error al previsualizar el objeto, volvé a intentar",
+        dialogTitle = "Error"
+    )
     MensajeSinConexionAInternet()
 }
 
-@Composable
-fun BotonConDescripcion(onClick: () -> Unit, textoBoton: String, descripcion: String) {
-    Card(
-        modifier = Modifier.padding(bottom = 8.dp)
-    ) {
-        Text(
-            text = descripcion,
-            Modifier.padding(16.dp)
-        )
-        Button(
-            onClick = {onClick()},
-            modifier = Modifier
-                .padding(16.dp, 0.dp, 16.dp, 16.dp)
-                .fillMaxWidth()
-        ) {
-            Text(text = textoBoton)
-        }
-    }
-}
 
 @Composable
 private fun managedActivityResultLauncher(

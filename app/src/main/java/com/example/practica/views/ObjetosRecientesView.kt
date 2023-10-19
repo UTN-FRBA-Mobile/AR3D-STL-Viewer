@@ -1,6 +1,7 @@
 package com.example.practica.views
 
 import android.content.Context
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -9,8 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material3.Divider
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -20,7 +24,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -55,35 +58,36 @@ fun ListaObjetosRecientes(
 @Composable
 fun ObjetoReciente(nombreObjeto: String, context: Context, objetoEliminado: MutableState<Boolean>) {
     val verPopUp = remember { mutableStateOf(false) }
-    Divider()
-    Row(
+    val expanded = remember { mutableStateOf(false) }
+
+    Card (
         modifier = Modifier
             .fillMaxSize()
             .padding(0.dp, 4.dp, 0.dp, 4.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = eliminarExtensionObj(nombreObjeto),
-            fontWeight = FontWeight.Bold
-        )
-        Box {
-            TextButton(
-                modifier = Modifier,
-                onClick = { lanzarVistaPreviaObjetoReciente(context, nombreObjeto) }
-            ) {
-                Text(text = "Ver")
-            }
-            TextButton(
+        Row(
+            modifier = Modifier
+                .clickable { lanzarVistaPreviaObjetoReciente(context, nombreObjeto) }
+                .fillMaxSize(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
                 modifier = Modifier
-                    .padding(60.dp, 0.dp, 0.dp, 0.dp),
-                onClick = { verPopUp.value = true }
+                    .padding(start = 16.dp),
+                text = eliminarExtensionObj(nombreObjeto),
+                fontWeight = FontWeight.Bold
+            )
+            TextButton(
+                onClick = {
+                    expanded.value = true
+                }
             ) {
                 Icon(
-                    Icons.Rounded.Delete,
-                    contentDescription = stringResource(id = R.string.eliminacion_objeto_visto),
-                    tint = Color.Red
+                    Icons.Rounded.MoreVert,
+                    contentDescription = stringResource(id = R.string.menu_objeto_reciente)
                 )
+                MenuAccionesObjetoReciente(expanded) { verPopUp.value = true }
             }
         }
     }
@@ -100,6 +104,31 @@ fun ObjetoReciente(nombreObjeto: String, context: Context, objetoEliminado: Muta
         dialogText = "Estás seguro que querés eliminar el objeto ${eliminarExtensionObj(nombreObjeto)}?",
         textoDismiss = "No",
     )
+}
+
+@Composable
+fun MenuAccionesObjetoReciente(
+    menuExpandido: MutableState<Boolean>,
+    onClick: () -> Unit
+) {
+    DropdownMenu(
+        modifier = Modifier.padding(end = 8.dp),
+        expanded = menuExpandido.value,
+        onDismissRequest = { menuExpandido.value = false }
+    ) {
+        DropdownMenuItem(
+            text = { Text("Descartar") },
+            onClick = {
+                onClick()
+                menuExpandido.value = false
+            },
+            leadingIcon = {
+                Icon(
+                    Icons.Outlined.Delete,
+                    contentDescription = null
+                )
+            })
+    }
 }
 
 fun eliminarExtensionObj(nombreArchivoObj: String): String {
