@@ -19,7 +19,7 @@ interface CatalogoApiService {
 }
 
 fun catalogoApiService(): CatalogoApiService {
-    val BASE_URL = "https://cc9c5264-8d0c-4160-9104-4da34d073a89.mock.pstmn.io"
+    val BASE_URL = "https://2d352252-1d8a-4be2-bda5-de2fc9b57cd7.mock.pstmn.io"
 
     val retrofit = Retrofit
         .Builder()
