@@ -19,6 +19,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -93,9 +94,12 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
         dialogText = "Error al previsualizar el objeto, volvé a intentar",
         dialogTitle = "Error"
     )
-    MensajeSinConexionAInternet()
+    MensajeToast(
+        texto = "Sin conexión a internet!",
+        Color.Red,
+        esVisible = { !hayConexionAInternet(context = context) }
+    )
 }
-
 
 @Composable
 private fun managedActivityResultLauncher(

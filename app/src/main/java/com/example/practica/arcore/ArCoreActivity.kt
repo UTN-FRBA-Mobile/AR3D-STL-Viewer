@@ -162,7 +162,7 @@ class ArCoreActivity : AppCompatActivity() {
     super.onRequestPermissionsResult(requestCode, permissions, results)
     if (!CameraPermissionHelper.hasCameraPermission(this)) {
       // Use toast instead of snackbar here since the activity will exit.
-      Toast.makeText(this, "Camera permission is needed to run this application", Toast.LENGTH_LONG)
+      Toast.makeText(this, "Esta aplicación necesita la última versión de Google Play Services for AR", Toast.LENGTH_LONG)
         .show()
       if (!CameraPermissionHelper.shouldShowRequestPermissionRationale(this)) {
         // Permission denied with checking "Do not ask again".

@@ -20,7 +20,7 @@
     <string translatable="false" name="waiting_taps">Tap on a surface to place an object.</string>
     <string name="menu_objeto_reciente" />
     <string name="visualizar_objeto_reciente" />
-    <string name="cerrar_toast_conexion_a_internet" />
+    <string name="cerrar_toast" />
     <string name="waring_sin_internet" />
 
 </resources>

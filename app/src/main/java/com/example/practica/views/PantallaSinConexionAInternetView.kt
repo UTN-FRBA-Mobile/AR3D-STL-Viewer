@@ -53,7 +53,7 @@ fun PantallaSinConexionAInternet(
                     modifier = Modifier.size(200.dp)
                 )
                 Text(
-                    text = "Parece que no tenes acceso a internet"
+                    text = "Parece que no tenés acceso a internet"
                 )
             }
             Button(

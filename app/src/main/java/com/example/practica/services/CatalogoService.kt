@@ -16,6 +16,9 @@ interface CatalogoApiService {
 
     @GET("/catalogo")
     suspend fun getObjetoPorNombre(@Query("name") name: String): String
+
+    @GET("/catalogo/stl")
+    suspend fun getArchivoStlPorNombre(@Query("name") name: String): String
 }
 
 fun catalogoApiService(): CatalogoApiService {
