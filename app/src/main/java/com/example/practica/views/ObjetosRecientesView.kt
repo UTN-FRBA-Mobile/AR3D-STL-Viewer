@@ -112,7 +112,8 @@ fun MenuAccionesObjetoReciente(
     onClick: () -> Unit
 ) {
     DropdownMenu(
-        modifier = Modifier.padding(end = 8.dp),
+        modifier = Modifier
+            .padding(start= 8.dp, end = 8.dp),
         expanded = menuExpandido.value,
         onDismissRequest = { menuExpandido.value = false }
     ) {
