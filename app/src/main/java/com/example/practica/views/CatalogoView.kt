@@ -1,7 +1,12 @@
 package com.example.practica.views
 
+import android.content.ContentValues
 import android.content.Context
+import android.net.Uri
+import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,9 +48,9 @@ import com.example.practica.viewmodel.CatalogoViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.File
-import java.io.FileOutputStream
+import java.io.OutputStream
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>) {
     val context = LocalContext.current
@@ -76,7 +81,7 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
 
     LaunchedEffect(archivoStl) {
         if(archivoStl != null) {
-            guardarArchivoStl(archivoStl!!.nombre, archivoStl!!.contenido, estadoAlGuardarArchivo)
+            guardarArchivoStl(archivoStl!!.nombre, archivoStl!!.contenido, estadoAlGuardarArchivo, context)
         }
     }
 
@@ -248,19 +253,29 @@ fun buscarArchivoStl(name: String, busquedaArchivoStlViewModel: BusquedaArchivoS
     }
 }
 
-fun guardarArchivoStl(name: String, contenidoArchivoStl: String, estadoAlGuardarArchivo: MutableState<EstadoAlGuardarArchivo>) {
-    val nombreArchivo = name + ".stl"
-    val directorioDescargas = Environment
-        .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-    val archivo = File(directorioDescargas, nombreArchivo)
-
+@RequiresApi(Build.VERSION_CODES.Q)
+fun guardarArchivoStl(name: String, contenidoArchivoStl: String, estadoAlGuardarArchivo: MutableState<EstadoAlGuardarArchivo>, context: Context) {
     try {
-        val fileOutputStream = FileOutputStream(archivo)
-        fileOutputStream.write(contenidoArchivoStl.toByteArray())
-        fileOutputStream.close()
+        val nombreArchivo = name + ".stl"
+        val contentResolver = context.contentResolver
+        val contentValues = ContentValues()
+        contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, nombreArchivo)
+        contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
 
-        estadoAlGuardarArchivo.value = EstadoAlGuardarArchivo("GUARDADO", name)
-    } catch(ex: Exception) {
+        val externalContentUri = MediaStore.Downloads.EXTERNAL_CONTENT_URI
+        val uri: Uri? = contentResolver.insert(externalContentUri, contentValues)
+
+        uri?.let {
+            val outputStream: OutputStream? = contentResolver.openOutputStream(uri)
+            outputStream?.use { stream ->
+                stream.write(contenidoArchivoStl.toByteArray())
+                stream.flush()
+            }
+            estadoAlGuardarArchivo.value = EstadoAlGuardarArchivo("GUARDADO", name)
+        } ?: run {
+            estadoAlGuardarArchivo.value = EstadoAlGuardarArchivo("ERROR", name)
+        }
+    } catch (ex: Exception) {
         estadoAlGuardarArchivo.value = EstadoAlGuardarArchivo("ERROR", name)
     }
 }
