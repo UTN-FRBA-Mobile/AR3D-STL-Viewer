@@ -27,53 +27,62 @@ import kotlinx.coroutines.launch
 @Composable
 fun ConfirmarStl(navController: NavHostController, textoTopBar: MutableState<String>) {
     val context = LocalContext.current
-    textoTopBar.value = "Confirmacion"
+    textoTopBar.value = "Confirmacion de STL"
 
     val errorLanzarVistaPrevia = remember { mutableStateOf(false) }
     val argumentos = navController.currentBackStackEntryAsState().value?.arguments
     val fileName = argumentos?.getString("fileName") ?: ""
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            Card(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = "Seleccionaste el archivo:",
-                    Modifier.padding(16.dp)
-                )
-                Text(text = "${fileName}.stl",
-                    Modifier.padding(16.dp)
-                    )
-            }
-        }
-        Button(
-            onClick = {
-                val corutinaLanzarVistaPrevia = CoroutineScope(Dispatchers.Default).launch {
-                    lanzarVistaPrevia(context, fileName, errorLanzarVistaPrevia)
-                }
-                corutinaLanzarVistaPrevia.invokeOnCompletion { causa ->
-                    if(causa == null) {
+    val cargandoStl = remember { mutableStateOf(false) }
 
-                    } else {
-                        errorLanzarVistaPrevia.value = true
-                    }
-                }
-            },
+    if(cargandoStl.value){
+        Spinner()
+    }
+    else{
+        Column(
             modifier = Modifier
-                .padding(top = 12.dp)
-                .fillMaxWidth()
+                .fillMaxSize()
+                .padding(start = 16.dp, top = 16.dp, end = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = "Confirmar")
-        }
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                Card(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Seleccionaste el archivo:",
+                        Modifier.padding(16.dp)
+                    )
+                    Text(text = "${fileName}.stl",
+                        Modifier.padding(16.dp)
+                    )
+                }
+            }
+            Button(
+                onClick = {
+                    cargandoStl.value = true
+                    val corutinaLanzarVistaPrevia = CoroutineScope(Dispatchers.Default).launch {
+                        lanzarVistaPrevia(context, fileName, errorLanzarVistaPrevia)
+                    }
+                    corutinaLanzarVistaPrevia.invokeOnCompletion { causa ->
+                        if(causa == null) {
+
+                        } else {
+                            errorLanzarVistaPrevia.value = true
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .padding(top = 12.dp)
+                    .fillMaxWidth()
+            ) {
+                Text(text = "Confirmar")
+            }
+    }
+
     }
     PopUp(
         verPopUp = errorLanzarVistaPrevia,
