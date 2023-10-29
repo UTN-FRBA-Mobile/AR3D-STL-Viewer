@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.practica.arcore.ArCoreActivity
 import com.example.practica.repository.buscarObjetosVistosRecientementeEnOrdenUltimaVisualizacion
 import com.example.practica.utils.hayConexionAInternet
@@ -40,7 +41,7 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
     val errorLanzarVistaPrevia = remember { mutableStateOf(false) }
 
     val addFileLauncher =
-        managedActivityResultLauncher(context, objetosVistosRecientemente, errorLanzarVistaPrevia)
+        managedActivityResultLauncher(context, objetosVistosRecientemente, errorLanzarVistaPrevia, navController)
     textoTopBar.value = "Bienvenido"
 
     LaunchedEffect(1, objetoEliminado.value) {
@@ -84,15 +85,6 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
         }
         ListaObjetosRecientes(objetosVistosRecientemente.value, context, objetoEliminado)
     }
-    PopUp(
-        verPopUp = errorLanzarVistaPrevia,
-        onConfirmation = {
-            errorLanzarVistaPrevia.value = false
-        },
-        "Ok",
-        dialogText = "Error al previsualizar el objeto, volvé a intentar",
-        dialogTitle = "Error"
-    )
     MensajeSinConexionAInternet()
 }
 
@@ -101,7 +93,8 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
 private fun managedActivityResultLauncher(
     context: Context,
     objetosVistosRecientemente: MutableState<List<String>>,
-    errorLanzarVistaPrevia: MutableState<Boolean>
+    errorLanzarVistaPrevia: MutableState<Boolean>,
+    navController: NavHostController
 ): ManagedActivityResultLauncher<String, Uri?> {
     val addFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
         if (it != null) {
@@ -117,18 +110,7 @@ private fun managedActivityResultLauncher(
             }
 
             val fileText = stringBuilder.toString()
-
-            val corutinaLanzarVistaPrevia = CoroutineScope(Dispatchers.Default).launch {
-                lanzarVistaPrevia(context, fileText, errorLanzarVistaPrevia)
-            }
-
-            corutinaLanzarVistaPrevia.invokeOnCompletion { causa ->
-                if(causa == null) {
-                    objetosVistosRecientemente.value = buscarObjetosVistosRecientementeEnOrdenUltimaVisualizacion(context)
-                } else {
-                    errorLanzarVistaPrevia.value = true
-                }
-            }
+            navController.navigate("confirmarstl/${fileText}")
 
         }
     }
