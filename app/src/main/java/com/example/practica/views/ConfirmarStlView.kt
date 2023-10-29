@@ -1,5 +1,6 @@
 package com.example.practica.views
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,8 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -34,15 +37,23 @@ fun ConfirmarStl(navController: NavHostController, textoTopBar: MutableState<Str
         modifier = Modifier
             .fillMaxSize()
             .padding(start = 16.dp, top = 16.dp, end = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Card {
-            Text(
-                text = "Seleccionaste el archivo",
-                Modifier.padding(16.dp)
-            )
-        }
-        Card{
-            Text(text = "${fileName}.stl")
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Card(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "Seleccionaste el archivo:",
+                    Modifier.padding(16.dp)
+                )
+                Text(text = "${fileName}.stl",
+                    Modifier.padding(16.dp)
+                    )
+            }
         }
         Button(
             onClick = {
