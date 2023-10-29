@@ -2,7 +2,6 @@ package com.example.practica.views
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.material3.*
@@ -14,30 +13,32 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.zIndex
 import com.example.practica.R
-import com.example.practica.utils.hayConexionAInternet
 import kotlinx.coroutines.delay
 
 @Composable
-fun MensajeSinConexionAInternet() {
-    val context = LocalContext.current
+fun MensajeToast(texto: String, color: Color, esVisible: () -> Boolean = {true}, onDismiss: () -> Unit = {}) {
     val toastVisible = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         delay(1000)
-        toastVisible.value = !hayConexionAInternet(context = context)
+        toastVisible.value = esVisible()
     }
 
     if(toastVisible.value) {
-        ToastSinInternet(toastVisible)
+        ToastMensaje(toastVisible, texto, color, onDismiss)
     }
 }
 
 @Composable
-fun ToastSinInternet(toastVisible: MutableState<Boolean>) {
+fun ToastMensaje(
+    toastVisible: MutableState<Boolean>,
+    texto: String,
+    color: Color,
+    onDismiss: () -> Unit
+) {
     Box(modifier =  Modifier
         .fillMaxSize()
         .zIndex(1f)
@@ -47,20 +48,23 @@ fun ToastSinInternet(toastVisible: MutableState<Boolean>) {
                 .padding(16.dp)
                 .align(Alignment.BottomCenter),
             contentColor = Color.White,
-            containerColor = Color.Red,
+            containerColor = color,
             action = {
                 TextButton(
-                    onClick = { toastVisible.value = false }
+                    onClick = {
+                        toastVisible.value = false
+                        onDismiss()
+                    }
                 ) {
                     Icon(
                         Icons.Rounded.Close,
-                        contentDescription = stringResource(id = R.string.cerrar_toast_conexion_a_internet),
+                        contentDescription = stringResource(id = R.string.cerrar_toast),
                         tint = Color.White
                     )
                 }
             }
         ) {
-            Text("Sin conexión a internet!")
+            Text(texto)
         }
     }
 }

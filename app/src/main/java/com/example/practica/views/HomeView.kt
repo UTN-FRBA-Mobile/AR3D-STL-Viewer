@@ -19,6 +19,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -41,7 +42,7 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
     val errorLanzarVistaPrevia = remember { mutableStateOf(false) }
 
     val addFileLauncher =
-        managedActivityResultLauncher(context, objetosVistosRecientemente, errorLanzarVistaPrevia, navController)
+        managedActivityResultLauncher(context, objetosVistosRecientemente, errorLanzarVistaPrevia)
     textoTopBar.value = "Bienvenido"
 
     LaunchedEffect(1, objetoEliminado.value) {
@@ -85,7 +86,20 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
         }
         ListaObjetosRecientes(objetosVistosRecientemente.value, context, objetoEliminado)
     }
-    MensajeSinConexionAInternet()
+    PopUp(
+        verPopUp = errorLanzarVistaPrevia,
+        onConfirmation = {
+            errorLanzarVistaPrevia.value = false
+        },
+        "Ok",
+        dialogText = "Error al previsualizar el objeto, volvé a intentar",
+        dialogTitle = "Error"
+    )
+    MensajeToast(
+        texto = "Sin conexión a internet!",
+        Color.Red,
+        esVisible = { !hayConexionAInternet(context = context) }
+    )
 }
 
 
@@ -93,8 +107,7 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
 private fun managedActivityResultLauncher(
     context: Context,
     objetosVistosRecientemente: MutableState<List<String>>,
-    errorLanzarVistaPrevia: MutableState<Boolean>,
-    navController: NavHostController
+    errorLanzarVistaPrevia: MutableState<Boolean>
 ): ManagedActivityResultLauncher<String, Uri?> {
     val addFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
         if (it != null) {

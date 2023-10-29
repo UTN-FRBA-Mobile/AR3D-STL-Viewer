@@ -1,6 +1,12 @@
 package com.example.practica.views
 
+import android.content.ContentValues
 import android.content.Context
+import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,6 +32,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -36,8 +43,14 @@ import com.example.practica.services.Objeto3d
 import com.example.practica.utils.convertirBase64ABitMap
 import com.example.practica.utils.hayConexionAInternet
 import com.example.practica.utils.lanzarVistaPrevia
+import com.example.practica.viewmodel.BusquedaArchivoStlViewModel
 import com.example.practica.viewmodel.CatalogoViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.OutputStream
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>) {
     val context = LocalContext.current
@@ -47,9 +60,14 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
     val catalogo by catalogoViewModel.catalogo.observeAsState(emptyList())
     val error by catalogoViewModel.error.observeAsState(false)
     val isLoadingCatalogo by catalogoViewModel.isLoading.observeAsState(true)
+    val estadoAlGuardarArchivo = remember { mutableStateOf(EstadoAlGuardarArchivo()) }
 
     val verSpinnerCargandoCatalogo = remember { mutableStateOf(isLoadingCatalogo) }
     val verPopUpError = remember { mutableStateOf(error) }
+
+    val busquedaArchivoStlViewModel: BusquedaArchivoStlViewModel = viewModel()
+    val errorBusquedaArchivoStl by busquedaArchivoStlViewModel.error.observeAsState(false)
+    val archivoStl by busquedaArchivoStlViewModel.archivoStl.observeAsState(null)
 
     LaunchedEffect(catalogo) {
         catalogoViewModel.getCatalogo()
@@ -61,6 +79,12 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
         verSpinnerCargandoCatalogo.value = isLoadingCatalogo
     }
 
+    LaunchedEffect(archivoStl) {
+        if(archivoStl != null) {
+            guardarArchivoStl(archivoStl!!.nombre, archivoStl!!.contenido, estadoAlGuardarArchivo, context)
+        }
+    }
+
     if(verSpinnerCargandoCatalogo.value) {
         Spinner()
     } else {
@@ -69,11 +93,13 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
         ) {
             catalogo.let {
                 items(it.size) { index ->
-                    CardObjeto3d(context, it[index], esUltimoElemento(index, catalogo))
+                    CardObjeto3d(context, it[index], esUltimoElemento(index, catalogo), busquedaArchivoStlViewModel)
                 }
             }
         }
+        ToastConfirmacionDescargaArchivo(estadoAlGuardarArchivo, errorBusquedaArchivoStl)
     }
+
     PopUp(
         verPopUp = verPopUpError,
         onConfirmation = {
@@ -87,10 +113,16 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
 }
 
 @Composable
-fun CardObjeto3d(context: Context, objeto3d: Objeto3d, ultimoElemento: Boolean = false) {
+fun CardObjeto3d(
+    context: Context,
+    objeto3d: Objeto3d,
+    ultimoElemento: Boolean = false,
+    busquedaArchivoStlViewModel: BusquedaArchivoStlViewModel
+) {
     val cargandoVistaPrevia = remember { mutableStateOf(false) }
     val objeto3dObj = remember { mutableStateOf("") }
     val errorLanzarVistaPrevia = remember { mutableStateOf(false) }
+    val verPopUpPreguntaGuardarArchivoStl = remember { mutableStateOf(false) }
 
     LaunchedEffect(objeto3dObj.value) {
         lanzarVistaPrevia(context, objeto3dObj.value, errorLanzarVistaPrevia)
@@ -149,7 +181,7 @@ fun CardObjeto3d(context: Context, objeto3d: Objeto3d, ultimoElemento: Boolean =
                         else Text(text = "Previsualizar")
                     }
                     ElevatedButton(
-                        onClick = {/* se descarga el archivo .STL */},
+                        onClick = { verPopUpPreguntaGuardarArchivoStl.value = true },
                         modifier = Modifier
                             .padding(8.dp, 0.dp, 16.dp, 16.dp)
                             .weight(1f)
@@ -160,6 +192,21 @@ fun CardObjeto3d(context: Context, objeto3d: Objeto3d, ultimoElemento: Boolean =
                 }
             }
         }
+
+        PopUp(
+            verPopUp = verPopUpPreguntaGuardarArchivoStl,
+            onConfirmation = {
+                verPopUpPreguntaGuardarArchivoStl.value = false
+                buscarArchivoStl(objeto3d.name, busquedaArchivoStlViewModel)
+            },
+            onDismissRequest = {
+                verPopUpPreguntaGuardarArchivoStl.value = false
+            },
+            textoConfirmation = "Sí",
+            dialogTitle = "Descarga de STL",
+            dialogText = "Querés guardar el archivo ${objeto3d.name}.stl?",
+            textoDismiss = "No",
+        )
         PopUp(
             verPopUp = errorLanzarVistaPrevia,
             onConfirmation = {
@@ -171,6 +218,68 @@ fun CardObjeto3d(context: Context, objeto3d: Objeto3d, ultimoElemento: Boolean =
         )
     }
 }
+
+@Composable
+fun ToastConfirmacionDescargaArchivo(
+    estadoAlGuardarArchivo: MutableState<EstadoAlGuardarArchivo>,
+    errorBusquedaArchivoStl: Boolean
+) {
+    if(errorBusquedaArchivoStl) {
+        MensajeToastErrorAlGuardarArchivo(estadoAlGuardarArchivo)
+    }
+    when(estadoAlGuardarArchivo.value.estado) {
+        "GUARDADO" -> MensajeToast(
+            texto = "Archivo ${estadoAlGuardarArchivo.value.nombreArchivo}.stl guardado!",
+            MaterialTheme.colorScheme.secondary,
+            onDismiss = {estadoAlGuardarArchivo.value = EstadoAlGuardarArchivo()}
+        )
+        "ERROR" -> MensajeToastErrorAlGuardarArchivo(estadoAlGuardarArchivo)
+        "" -> {}
+    }
+}
+
+@Composable
+fun MensajeToastErrorAlGuardarArchivo(estadoAlGuardarArchivo: MutableState<EstadoAlGuardarArchivo>) {
+    MensajeToast(
+        texto = "Error al descargar el archivo ${estadoAlGuardarArchivo.value.nombreArchivo}.stl!",
+        Color.Red,
+        onDismiss = {estadoAlGuardarArchivo.value = EstadoAlGuardarArchivo()}
+    )
+}
+
+fun buscarArchivoStl(name: String, busquedaArchivoStlViewModel: BusquedaArchivoStlViewModel) {
+    CoroutineScope(Dispatchers.Default).launch {
+        busquedaArchivoStlViewModel.getArchivoStl(name)
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.Q)
+fun guardarArchivoStl(name: String, contenidoArchivoStl: String, estadoAlGuardarArchivo: MutableState<EstadoAlGuardarArchivo>, context: Context) {
+    try {
+        val nombreArchivo = name + ".stl"
+        val contentResolver = context.contentResolver
+        val contentValues = ContentValues()
+        contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, nombreArchivo)
+        contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+
+        val externalContentUri = MediaStore.Downloads.EXTERNAL_CONTENT_URI
+        val uri: Uri? = contentResolver.insert(externalContentUri, contentValues)
+
+        uri?.let {
+            val outputStream: OutputStream? = contentResolver.openOutputStream(uri)
+            outputStream?.use { stream ->
+                stream.write(contenidoArchivoStl.toByteArray())
+                stream.flush()
+            }
+            estadoAlGuardarArchivo.value = EstadoAlGuardarArchivo("GUARDADO", name)
+        } ?: run {
+            estadoAlGuardarArchivo.value = EstadoAlGuardarArchivo("ERROR", name)
+        }
+    } catch (ex: Exception) {
+        estadoAlGuardarArchivo.value = EstadoAlGuardarArchivo("ERROR", name)
+    }
+}
+
 fun esUltimoElemento(index: Int, catalogo: List<Objeto3d>): Boolean {
     return index == catalogo.size - 1
 }
@@ -182,3 +291,5 @@ fun modifierUltimoElementoCatalogo(ultimoElemento: Boolean): Modifier {
         Modifier
     }
 }
+
+data class EstadoAlGuardarArchivo(val estado: String = "", val nombreArchivo: String = "")
