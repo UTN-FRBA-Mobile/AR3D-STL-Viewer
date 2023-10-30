@@ -32,7 +32,7 @@ fun PantallaSinConexionAInternet(
     navController: NavHostController,
     textoTopBar: MutableState<String>
 ) {
-    textoTopBar.value = "Sin internet"
+    textoTopBar.value =  stringResource(id = R.string.sin_conexion)
     val context = LocalContext.current
     val argumentos = navController.currentBackStackEntryAsState().value?.arguments
     val accionPorArgumento = argumentos?.getString("accionReintento")
@@ -53,7 +53,7 @@ fun PantallaSinConexionAInternet(
                     modifier = Modifier.size(200.dp)
                 )
                 Text(
-                    text = "Parece que no tenés acceso a internet"
+                    text = stringResource(id = R.string.probablemente_sin_conexion)
                 )
             }
             Button(
@@ -62,7 +62,7 @@ fun PantallaSinConexionAInternet(
                     .fillMaxWidth()
                     .padding(start = 16.dp, bottom = 16.dp, end = 16.dp)
             ) {
-                Text(text = "Reintentar")
+                Text(text = stringResource(id = R.string.reintentar))
             }
         }
     }

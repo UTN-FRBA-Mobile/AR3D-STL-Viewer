@@ -15,12 +15,14 @@ import com.example.practica.main.AppScaffold
 import com.example.practica.views.Catalogo
 import com.example.practica.views.Home
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.practica.views.ConfirmarStl
 import com.example.practica.views.PantallaSinConexionAInternet
+import com.example.practica.R
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -35,7 +37,8 @@ class MainActivity : ComponentActivity() {
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun App(navController: NavHostController = rememberNavController()) {
-    val textoTopBar = remember { mutableStateOf("Bienvenido") }
+    val greeting = stringResource(id = R.string.bienvenido)
+    val textoTopBar = remember { mutableStateOf(greeting) }
     val rutaHome = "home"
 
     AppScaffold(textoTopBar = textoTopBar.value, navController) {

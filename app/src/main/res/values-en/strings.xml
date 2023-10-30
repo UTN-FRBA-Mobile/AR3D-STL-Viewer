@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AR3dStlViewer</string>
+    <string name="ok">Ok</string>
+    <string name="menu_objeto_reciente" />
+    <string name="visualizar_objeto_reciente" />
+    <string name="cerrar_toast" />
+    <string name="waring_sin_internet" />
+    <string name="catalogo">Catalog</string>
+    <string name="buscar_arhivo">Search file</string>
+    <string name="sin_conexion">No Internet connection</string>
+    <string name="subir_archivo_stl">Upload your .STL or search in our catalog to watch it in augmented reality</string>
+    <string name="error_al_previsualizar">Error pre-visualizing the object, try it again</string>
+    <string name="bienvenido">Welcome</string>
+    <string name="atras">Back</string>
+    <string name="probablemente_sin_conexion">It looks like you don\'t have Internet connection</string>
+    <string name="reintentar">Try it again</string>
+    <string name="ultimas_visualizaciones">Last previews</string>
+    <string name="previsualizar">Preview</string>1
+    <string name="descargar_stl">Download .stl</string>
+    <string name="si">Yes</string>
+    <string name="descarga_stl">STL Download</string>
+    <string name="querer_guardar_stl">Do you want to save the file</string>
+    <string name="no">No</string>
+    <string name="archivo">Archivo</string>
+    <string name="guardado">guardado!</string>
+    <string name="error_descargando_archivo">Error al descargar el archivo</string>
+
+    <string name="searching_planes">Searching for surfaces...</string>
+    <string name="waiting_taps">Tap on a surface to place the object.</string>
+    <string name="options_title_instant_placement">Instant Placement options</string>
+    <string name="done">Done</string>
+    <string name="options_title_without_depth">Your device does not support depth</string>
+    <string name="options_title_with_depth">Your device supports depth</string>
+    <string name="button_text_disable_depth">Disable</string>
+    <string name="button_text_enable_depth">Enable</string>
+    <string name="depth_use_explanation">When Depth is enabled on supported devices, virtual objects adapt to the environment by blending in with the real world.</string>
+    <string name="insufficient_features">Can\'t find anything. Aim device at a surface with more texture or color.</string>
+    <string name="excessive_motion">Moving too fast. Slow down.</string>
+    <string name="insufficient_light_message">Too dark. Try moving to a well-lit area.</string>
+    <string name="insufficient_light_android_s_message">Too dark. Try moving to a well-lit area.\nAlso, make sure the Block Camera is set to off in system settings.</string>
+    <string name="bad_state_message">Tracking lost due to bad internal state. Please try restarting the AR experience.</string>
+    <string name="camera_unavailable_message">Another app is using the camera. Tap on this app or try closing the other one.</string>
+    <string-array name="depth_options_array">
+        <item>Enable depth</item>
+        <item>Show depth map</item>
+    </string-array>
+    <string-array name="instant_placement_options_array">
+        <item>Enable Instant Placement</item>
+    </string-array>
+</resources>

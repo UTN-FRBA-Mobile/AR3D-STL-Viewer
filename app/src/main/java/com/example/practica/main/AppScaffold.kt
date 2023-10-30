@@ -17,7 +17,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import com.example.practica.R
 import com.example.practica.ui.theme.PracticaTheme
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -33,12 +35,12 @@ fun AppScaffold(textoTopBar: String, navController: NavController, content: @Com
                     },
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
                     navigationIcon = {
-                        if(textoTopBar != "Bienvenido") {
+                        if(textoTopBar != stringResource(id = R.string.bienvenido)) {
                             IconButton(onClick = { navController.popBackStack() }) {
                                 Icon(
                                     imageVector = Icons.Default.ArrowBack,
                                     tint = Color.White,
-                                    contentDescription = "Atrás"
+                                    contentDescription = stringResource(id = R.string.atras)
                                 )
                             }
                         }

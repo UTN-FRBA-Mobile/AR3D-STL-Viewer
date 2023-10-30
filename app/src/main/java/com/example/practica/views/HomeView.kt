@@ -6,10 +6,12 @@ import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedButton
@@ -22,8 +24,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.practica.R
 import com.example.practica.arcore.ArCoreActivity
 import com.example.practica.repository.buscarObjetosVistosRecientementeEnOrdenUltimaVisualizacion
 import com.example.practica.utils.buscarNombreArchivo
@@ -34,9 +38,9 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
     val context = LocalContext.current
     val objetosVistosRecientemente = remember { mutableStateOf<List<String>>(emptyList()) }
     val objetoEliminado = remember { mutableStateOf(false) }
-
     val addFileLauncher = managedActivityResultLauncher(context, navController)
-    textoTopBar.value = "Bienvenido"
+    textoTopBar.value = stringResource(id = R.string.bienvenido)
+
 
     LaunchedEffect(1, objetoEliminado.value) {
         objetosVistosRecientemente.value = buscarObjetosVistosRecientementeEnOrdenUltimaVisualizacion(context)
@@ -50,7 +54,7 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
     ) {
         Card {
             Text(
-                text = "Subí tu archivo .STL o buscá en nuestro catálogo para verlo en realidad aumentada",
+                text = stringResource(id = R.string.subir_archivo_stl),
                 Modifier.padding(16.dp)
             )
         }
@@ -60,7 +64,7 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
                 .padding(top = 16.dp)
                 .fillMaxWidth()
         ) {
-            Text(text = "Buscar archivo")
+            Text(text = stringResource(id = R.string.buscar_arhivo))
         }
         Button(
             onClick = {
@@ -74,12 +78,13 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
                 .padding(top = 8.dp)
                 .fillMaxWidth()
         ) {
-            Text(text = "Catálogo")
+            Text(text = stringResource(id = R.string.catalogo))
         }
         ListaObjetosRecientes(objetosVistosRecientemente.value, context, objetoEliminado)
     }
+
     MensajeToast(
-        texto = "Sin conexión a internet!",
+        texto = stringResource(id = R.string.sin_conexion),
         Color.Red,
         esVisible = { !hayConexionAInternet(context = context) }
     )

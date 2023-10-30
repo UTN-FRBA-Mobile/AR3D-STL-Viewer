@@ -1,26 +1,51 @@
 <resources>
     <string name="app_name">AR3dStlViewer</string>
     <string name="ok">Ok</string>
-    <string translatable="false" name="depth_use_explanation">When Depth is enabled on supported devices, virtual objects adapt to the environment by blending in with the real world.</string>
-    <string translatable="false" name="button_text_enable_depth">Enable</string>
-    <string translatable="false" name="button_text_disable_depth">Disable</string>
-    <string translatable="false" name="options_title_with_depth">Your device supports depth</string>
-    <string translatable="false" name="options_title_without_depth">Your device does not support depth</string>
-    <string translatable="false" name="done">Done</string>
-    <string-array translatable="false" name="depth_options_array">
-        <item>Enable depth</item>
-        <item>Show depth map</item>
+    <string name="depth_use_explanation">Cuando la profundidad está habilitada en dispositivos soportados, objetos virtuales se adaptan al ambiente mezclándose con el mundo real.</string>
+    <string name="button_text_enable_depth">Habilitado</string>
+    <string name="button_text_disable_depth">Deshabilitado</string>
+    <string name="options_title_with_depth">Tu dispositivo soporta profundidad</string>
+    <string name="options_title_without_depth">Tu dispositivo no soporta profundidad</string>
+    <string name="done">Hecho</string>
+    <string-array name="depth_options_array">
+        <item>Habilitar profundidad</item>
+        <item>Mostrar mapa de profundidad</item>
     </string-array>
-    <string translatable="false" name="options_title_instant_placement">Instant Placement options</string>
-    <string-array translatable="false" name="instant_placement_options_array">
-        <item>Enable Instant Placement</item>
+    <string name="options_title_instant_placement">Opciones de posicionamiento instantáneo</string>
+    <string-array name="instant_placement_options_array">
+        <item>Habilitar posicionamiento instantáneo</item>
     </string-array>
-
-    <string translatable="false" name="searching_planes">Searching for surfaces...</string>
-    <string translatable="false" name="waiting_taps">Tap on a surface to place an object.</string>
+    <string name="searching_planes">Buscando superficies...</string>
+    <string name="waiting_taps">Toca sobre una superficie para ubicar el objeto.</string>
     <string name="menu_objeto_reciente" />
     <string name="visualizar_objeto_reciente" />
     <string name="cerrar_toast" />
     <string name="waring_sin_internet" />
+    <string name="catalogo">Catálogo</string>
+    <string name="buscar_arhivo">Buscar archivo</string>
+    <string name="sin_conexion">Sin conexión a internet!</string>
+    <string name="subir_archivo_stl">Subí tu archivo .STL o buscá en nuestro catálogo para verlo en realidad aumentada</string>
+    <string name="error_al_previsualizar">Error al previsualizar el objeto, volvé a intentar</string>
+    <string name="bienvenido">Bienvenido</string>
+    <string name="atras">Atrás</string>
+    <string name="probablemente_sin_conexion">Parece que no tenés acceso a internet</string>
+    <string name="reintentar">Reintentar</string>
+    <string name="ultimas_visualizaciones">Últimas visualizaciones</string>
+    <string name="previsualizar">Previsualizar</string>
+    <string name="descargar_stl">Descargar .stl</string>
+    <string name="si">Sí</string>
+    <string name="descarga_stl">Descarga de STL</string>
+    <string name="querer_guardar_stl">¿Querés guardar el archivo</string>
+    <string name="no">No</string>
+    <string name="archivo">Archivo</string>
+    <string name="guardado">guardado!</string>
+    <string name="error_descargando_archivo">Error al descargar el archivo</string>
+    <string name="insufficient_features">No pudo encontrarse nada. Apuntá el dispositivo a una superficie con más textura o color con.</string>
+    <string name="excessive_motion">Mové el dispositivo más lentamente.</string>
+    <string name="insufficient_light_message">Área muy oscura.</string>
+    <string name="insufficient_light_android_s_message">Área muy oscura.\nAsegurate que el bloqueo de cámara está apagado en las configuraciones.</string>
+    <string name="bad_state_message">Traqueo perdido debido a un mal estado interno. Por favor intenta reinicial la app.</string>
+    <string name="camera_unavailable_message">Otra app está utilizando la cámara, intentá cerrarla.</string>
+
 
 </resources>

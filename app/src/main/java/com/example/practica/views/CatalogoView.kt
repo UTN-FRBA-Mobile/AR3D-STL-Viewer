@@ -34,11 +34,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.practica.R
 import com.example.practica.services.Objeto3d
 import com.example.practica.utils.convertirBase64ABitMap
 import com.example.practica.utils.hayConexionAInternet
@@ -54,7 +56,7 @@ import java.io.OutputStream
 @Composable
 fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>) {
     val context = LocalContext.current
-    textoTopBar.value = "Catálogo"
+    textoTopBar.value = stringResource(id = R.string.catalogo)
 
     val catalogoViewModel: CatalogoViewModel = viewModel()
     val catalogo by catalogoViewModel.catalogo.observeAsState(emptyList())
@@ -178,7 +180,7 @@ fun CardObjeto3d(
                             .align(Alignment.CenterVertically)
                     ) {
                         if(cargandoVistaPrevia.value) SpinnerButton()
-                        else Text(text = "Previsualizar")
+                        else Text(text = stringResource(id = R.string.previsualizar))
                     }
                     ElevatedButton(
                         onClick = { verPopUpPreguntaGuardarArchivoStl.value = true },
@@ -187,7 +189,7 @@ fun CardObjeto3d(
                             .weight(1f)
                             .align(Alignment.CenterVertically)
                     ) {
-                        Text(text = "Descargar .stl")
+                        Text(text = stringResource(id = R.string.descargar_stl))
                     }
                 }
             }
@@ -202,10 +204,10 @@ fun CardObjeto3d(
             onDismissRequest = {
                 verPopUpPreguntaGuardarArchivoStl.value = false
             },
-            textoConfirmation = "Sí",
-            dialogTitle = "Descarga de STL",
-            dialogText = "Querés guardar el archivo ${objeto3d.name}.stl?",
-            textoDismiss = "No",
+            textoConfirmation = stringResource(id = R.string.si),
+            dialogTitle = stringResource(id = R.string.descarga_stl),
+            dialogText = stringResource(id = R.string.querer_guardar_stl) + "${objeto3d.name}.stl?",
+            textoDismiss = stringResource(id = R.string.no),
         )
         PopUp(
             verPopUp = errorLanzarVistaPrevia,
@@ -213,8 +215,8 @@ fun CardObjeto3d(
                 errorLanzarVistaPrevia.value = false
             },
             "Ok",
-            dialogText = "Error al previsualizar el objeto, volvé a intentar",
-            dialogTitle = if(hayConexionAInternet(context)) "Error" else "Sin internet!"
+            dialogText = stringResource(id = R.string.error_al_previsualizar),
+            dialogTitle = if(hayConexionAInternet(context)) "Error" else stringResource(id = R.string.sin_conexion)
         )
     }
 }
@@ -229,7 +231,7 @@ fun ToastConfirmacionDescargaArchivo(
     }
     when(estadoAlGuardarArchivo.value.estado) {
         "GUARDADO" -> MensajeToast(
-            texto = "Archivo ${estadoAlGuardarArchivo.value.nombreArchivo}.stl guardado!",
+            texto = stringResource(id = R.string.archivo)+" ${estadoAlGuardarArchivo.value.nombreArchivo}.stl " + stringResource(id = R.string.guardado),
             MaterialTheme.colorScheme.secondary,
             onDismiss = {estadoAlGuardarArchivo.value = EstadoAlGuardarArchivo()}
         )
@@ -241,7 +243,7 @@ fun ToastConfirmacionDescargaArchivo(
 @Composable
 fun MensajeToastErrorAlGuardarArchivo(estadoAlGuardarArchivo: MutableState<EstadoAlGuardarArchivo>) {
     MensajeToast(
-        texto = "Error al descargar el archivo ${estadoAlGuardarArchivo.value.nombreArchivo}.stl!",
+        texto = stringResource(id = R.string.error_descargando_archivo) + "${estadoAlGuardarArchivo.value.nombreArchivo}.stl!",
         Color.Red,
         onDismiss = {estadoAlGuardarArchivo.value = EstadoAlGuardarArchivo()}
     )
