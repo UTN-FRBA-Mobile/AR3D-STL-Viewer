@@ -511,14 +511,6 @@ class ArCoreRenderer(val activity: ArCoreActivity) :
       if (wrappedAnchors.size == 0) {
         wrappedAnchors.add(WrappedAnchor(firstHitResult.createAnchor(), firstHitResult.trackable))
       }
-
-      // Adding an Anchor tells ARCore that it should track this position in
-      // space. This anchor is created on the Plane to place the 3D model
-      // in the correct position relative both to the world and to the plane.
-
-      // For devices that support the Depth API, shows a dialog to suggest enabling
-      // depth-based occlusion. This dialog needs to be spawned on the UI thread.
-      activity.runOnUiThread { activity.view.showOcclusionDialogIfNeeded() }
     }
   }
 

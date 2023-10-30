@@ -47,14 +47,13 @@ import java.io.IOException
  */
 class ArCoreActivity : AppCompatActivity() {
 
-
   companion object {
     private const val TAG = "ArcoreActivity"
   }
 
   lateinit var arCoreSessionHelper: ARCoreSessionLifecycleHelper
   lateinit var view: ArCoreView
-  lateinit var renderer: ArCoreRenderer
+  private lateinit var renderer: ArCoreRenderer
 
   val instantPlacementSettings = InstantPlacementSettings()
   val depthSettings = DepthSettings()
@@ -62,7 +61,7 @@ class ArCoreActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    var nombreArchivoObjeto3dObj = intent.extras?.getString("nombreArchivoObjeto3dObj")
+    val nombreArchivoObjeto3dObj = intent.extras?.getString("nombreArchivoObjeto3dObj")
 
     // Setup ARCore session lifecycle helper and configuration.
     arCoreSessionHelper = ARCoreSessionLifecycleHelper(this)
@@ -97,7 +96,7 @@ class ArCoreActivity : AppCompatActivity() {
     lifecycle.addObserver(view)
     setContentView(view.root)
 
-    var objeto3d = buscarArchivo(this, nombreArchivoObjeto3dObj!!)
+    val objeto3d = buscarArchivo(this, nombreArchivoObjeto3dObj!!)
 
     // Sets up an example renderer using our ARCoreRenderer.
     SampleRender(view.surfaceView, renderer, assets, objeto3d)
@@ -106,7 +105,7 @@ class ArCoreActivity : AppCompatActivity() {
     instantPlacementSettings.onCreate(this)
   }
 
-  fun buscarArchivo(context: Context, nombreArchivo: String): String {
+  private fun buscarArchivo(context: Context, nombreArchivo: String): String {
     val directorio = context.getExternalFilesDir(null)
 
     val archivo = File(directorio, nombreArchivo)
@@ -130,7 +129,7 @@ class ArCoreActivity : AppCompatActivity() {
   }
 
   // Configure the session, using Lighting Estimation, and Depth mode.
-  fun configureSession(session: Session) {
+  private fun configureSession(session: Session) {
     session.configure(
       session.config.apply {
         lightEstimationMode = Config.LightEstimationMode.ENVIRONMENTAL_HDR

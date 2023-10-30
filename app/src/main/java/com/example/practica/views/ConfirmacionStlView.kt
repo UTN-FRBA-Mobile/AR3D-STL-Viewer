@@ -79,17 +79,7 @@ fun ConfirmarStl(navController: NavHostController, textoTopBar: MutableState<Str
             }
             Button(
                 onClick = {
-                    cargandoStl.value = true
-                    val corutinaLanzarVistaPrevia = CoroutineScope(Dispatchers.Default).launch {
-                        lanzarVistaPrevia(context, fileName.value, errorLanzarVistaPrevia)
-                    }
-                    corutinaLanzarVistaPrevia.invokeOnCompletion { causa ->
-                        if (causa == null) {
-                            cargandoStl.value = false
-                        } else {
-                            errorLanzarVistaPrevia.value = true
-                        }
-                    }
+                    confirmarYVisualizarObjeto(cargandoStl, context, fileName, errorLanzarVistaPrevia)
                 },
                 modifier = Modifier
                     .padding(bottom = 16.dp)
@@ -110,6 +100,25 @@ fun ConfirmarStl(navController: NavHostController, textoTopBar: MutableState<Str
         dialogText = "Error al previsualizar el objeto, volvé a intentar",
         dialogTitle = "Error"
     )
+}
+
+private fun confirmarYVisualizarObjeto(
+    cargandoStl: MutableState<Boolean>,
+    context: Context,
+    fileName: MutableState<String>,
+    errorLanzarVistaPrevia: MutableState<Boolean>
+) {
+    cargandoStl.value = true
+    val corutinaLanzarVistaPrevia = CoroutineScope(Dispatchers.Default).launch {
+        lanzarVistaPrevia(context, fileName.value, errorLanzarVistaPrevia)
+    }
+    corutinaLanzarVistaPrevia.invokeOnCompletion { causa ->
+        if (causa == null) {
+            cargandoStl.value = false
+        } else {
+            errorLanzarVistaPrevia.value = true
+        }
+    }
 }
 
 @Composable
