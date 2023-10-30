@@ -38,12 +38,13 @@ fun ConfirmarStl(navController: NavHostController, textoTopBar: MutableState<Str
 
     val errorLanzarVistaPrevia = remember { mutableStateOf(false) }
     val argumentos = navController.currentBackStackEntryAsState().value?.arguments
-    val fileName = remember { mutableStateOf("") }
+    val argumentoFileName = argumentos?.getString("fileName").toString()
 
+    val fileName = remember { mutableStateOf("") }
     val addFileLauncher = managedActivityResultLauncher(context, fileName)
 
-    LaunchedEffect(argumentos?.getString("fileName")) {
-        fileName.value = argumentos?.getString("fileName").toString()
+    LaunchedEffect(argumentoFileName) {
+        fileName.value = argumentoFileName
     }
 
     val cargandoStl = remember { mutableStateOf(false) }
