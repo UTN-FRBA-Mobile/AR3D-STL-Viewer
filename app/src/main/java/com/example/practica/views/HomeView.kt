@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,31 +24,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.practica.arcore.ArCoreActivity
 import com.example.practica.repository.buscarObjetosVistosRecientementeEnOrdenUltimaVisualizacion
+import com.example.practica.utils.buscarNombreArchivo
 import com.example.practica.utils.hayConexionAInternet
-import com.example.practica.utils.lanzarVistaPrevia
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.io.BufferedReader
-import java.io.InputStreamReader
 
 @Composable
 fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
     val context = LocalContext.current
     val objetosVistosRecientemente = remember { mutableStateOf<List<String>>(emptyList()) }
     val objetoEliminado = remember { mutableStateOf(false) }
-    val errorLanzarVistaPrevia = remember { mutableStateOf(false) }
 
-    val addFileLauncher =
-        managedActivityResultLauncher(context, objetosVistosRecientemente, errorLanzarVistaPrevia)
+    val addFileLauncher = managedActivityResultLauncher(context, navController)
     textoTopBar.value = "Bienvenido"
 
     LaunchedEffect(1, objetoEliminado.value) {
-        objetosVistosRecientemente.value =
-            buscarObjetosVistosRecientementeEnOrdenUltimaVisualizacion(context)
+        objetosVistosRecientemente.value = buscarObjetosVistosRecientementeEnOrdenUltimaVisualizacion(context)
         objetoEliminado.value = false
     }
 
@@ -62,7 +54,7 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
                 Modifier.padding(16.dp)
             )
         }
-        Button(
+        ElevatedButton(
             onClick = { addFileLauncher.launch("*/*") },
             modifier = Modifier
                 .padding(top = 16.dp)
@@ -79,22 +71,13 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
                 }
             },
             modifier = Modifier
-                .padding(top = 12.dp)
+                .padding(top = 8.dp)
                 .fillMaxWidth()
         ) {
             Text(text = "Catálogo")
         }
         ListaObjetosRecientes(objetosVistosRecientemente.value, context, objetoEliminado)
     }
-    PopUp(
-        verPopUp = errorLanzarVistaPrevia,
-        onConfirmation = {
-            errorLanzarVistaPrevia.value = false
-        },
-        "Ok",
-        dialogText = "Error al previsualizar el objeto, volvé a intentar",
-        dialogTitle = "Error"
-    )
     MensajeToast(
         texto = "Sin conexión a internet!",
         Color.Red,
@@ -102,29 +85,12 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
     )
 }
 
-
 @Composable
-private fun managedActivityResultLauncher(
-    context: Context,
-    objetosVistosRecientemente: MutableState<List<String>>,
-    errorLanzarVistaPrevia: MutableState<Boolean>
-): ManagedActivityResultLauncher<String, Uri?> {
+private fun managedActivityResultLauncher(context: Context, navController: NavHostController): ManagedActivityResultLauncher<String, Uri?> {
     val addFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
         if (it != null) {
-            val inputStream = context.contentResolver.openInputStream(it)
-
-            val stringBuilder = StringBuilder()
-            inputStream?.use { stream ->
-                val reader = BufferedReader(InputStreamReader(stream))
-                var line: String?
-                while (reader.readLine().also { line = it } != null) {
-                    stringBuilder.append(line)
-                }
-            }
-
-            val fileText = stringBuilder.toString()
+            val fileText = buscarNombreArchivo(context, it)
             navController.navigate("confirmarstl/${fileText}")
-
         }
     }
     return addFileLauncher
