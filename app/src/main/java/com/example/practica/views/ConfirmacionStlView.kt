@@ -49,57 +49,54 @@ fun ConfirmarStl(navController: NavHostController, textoTopBar: MutableState<Str
 
     val cargandoStl = remember { mutableStateOf(false) }
 
-    if(cargandoStl.value){
-        Spinner()
-    } else {
-        Column(
+    Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(start = 16.dp, top = 16.dp, end = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                Card(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Seleccionaste el archivo ${fileName.value}.stl",
-                        Modifier.padding(16.dp)
-                    )
-                }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Card(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "Seleccionaste el archivo ${fileName.value}.stl",
+                    Modifier.padding(16.dp)
+                )
             }
-            Column {
-                ElevatedButton(
-                    onClick = { addFileLauncher.launch("*/*") },
-                    modifier = Modifier
-                        .padding(top = 16.dp, bottom = 8.dp)
-                        .fillMaxWidth()
-                ) {
-                    Text(text = "Buscar otro archivo")
-                }
-                Button(
-                    onClick = {
-                        cargandoStl.value = true
-                        val corutinaLanzarVistaPrevia = CoroutineScope(Dispatchers.Default).launch {
-                            lanzarVistaPrevia(context, fileName.value, errorLanzarVistaPrevia)
+        }
+        Column {
+            ElevatedButton(
+                onClick = { addFileLauncher.launch("*/*") },
+                modifier = Modifier
+                    .padding(top = 16.dp, bottom = 8.dp)
+                    .fillMaxWidth()
+            ) {
+                Text(text = "Buscar otro archivo")
+            }
+            Button(
+                onClick = {
+                    cargandoStl.value = true
+                    val corutinaLanzarVistaPrevia = CoroutineScope(Dispatchers.Default).launch {
+                        lanzarVistaPrevia(context, fileName.value, errorLanzarVistaPrevia)
+                    }
+                    corutinaLanzarVistaPrevia.invokeOnCompletion { causa ->
+                        if (causa == null) {
+                            cargandoStl.value = false
+                        } else {
+                            errorLanzarVistaPrevia.value = true
                         }
-                        corutinaLanzarVistaPrevia.invokeOnCompletion { causa ->
-                            if(causa == null) {
-                                cargandoStl.value = false
-                            } else {
-                                errorLanzarVistaPrevia.value = true
-                            }
-                        }
-                    },
-                    modifier = Modifier
-                        .padding(bottom = 16.dp)
-                        .fillMaxWidth()
-                ) {
-                    Text(text = "Confirmar")
-                }
+                    }
+                },
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+                    .fillMaxWidth()
+            ) {
+                if (cargandoStl.value) SpinnerButton()
+                else Text(text = "Confirmar")
             }
         }
     }
