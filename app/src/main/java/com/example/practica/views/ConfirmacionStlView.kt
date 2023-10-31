@@ -1,5 +1,6 @@
 package com.example.practica.views
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
@@ -67,7 +68,7 @@ fun ConfirmarStl(navController: NavHostController, textoTopBar: MutableState<Str
                     Modifier.padding(start = 16.dp, top= 16.dp, end = 0.dp, bottom = 16.dp)
                 )
                 Text(
-                    text = "${fileName.value}.stl",
+                    text = "${fileName.value}",
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(start = 4.dp, 16.dp)
                 )
@@ -114,8 +115,12 @@ private fun confirmarYVisualizarObjeto(
     errorLanzarVistaPrevia: MutableState<Boolean>
 ) {
     cargandoStl.value = true
+
+    val regex = Regex(" \\(\\d+\\)\\.stl|\\.stl| \\(\\d+\\)")
+    val nombreObjeto = fileName.value.replace(regex, "")
+
     val corutinaLanzarVistaPrevia = CoroutineScope(Dispatchers.Default).launch {
-        lanzarVistaPrevia(context, fileName.value, errorLanzarVistaPrevia)
+        lanzarVistaPrevia(context, nombreObjeto, errorLanzarVistaPrevia)
     }
     corutinaLanzarVistaPrevia.invokeOnCompletion { causa ->
         if (causa == null) {
@@ -126,6 +131,7 @@ private fun confirmarYVisualizarObjeto(
     }
 }
 
+@SuppressLint("Range")
 @Composable
 private fun managedActivityResultLauncher(context: Context, fileName: MutableState<String>): ManagedActivityResultLauncher<String, Uri?> {
     val addFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
