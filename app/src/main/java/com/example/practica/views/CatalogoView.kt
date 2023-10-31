@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -40,9 +40,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import coil.compose.SubcomposeAsyncImage
 import com.example.practica.R
 import com.example.practica.services.Objeto3d
-import com.example.practica.utils.convertirBase64ABitMap
 import com.example.practica.utils.hayConexionAInternet
 import com.example.practica.utils.lanzarVistaPrevia
 import com.example.practica.viewmodel.BusquedaArchivoStlViewModel
@@ -146,18 +146,21 @@ fun CardObjeto3d(
                     .fillMaxWidth()
                     .align(Alignment.CenterStart)
             ) {
-                Image(
+                SubcomposeAsyncImage(
                     modifier = Modifier
-                        .padding(top = 16.dp)
+                        .size(256.dp)
                         .align(Alignment.CenterHorizontally),
-                    bitmap = convertirBase64ABitMap(objeto3d.img),
-                    contentDescription = "contentDescription"
+                    model = objeto3d.imgUrl,
+                    loading = {
+                        Spinner()
+                    },
+                    contentDescription = null,
                 )
                 Text(
                     text = objeto3d.name,
                     fontSize = 22.sp,
                     modifier = Modifier
-                        .padding(16.dp, 0.dp, 16.dp, 16.dp),
+                        .padding(16.dp, 0.dp, 0.dp, 16.dp),
                     textAlign = TextAlign.Center
                 )
                 Divider(

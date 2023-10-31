@@ -6,12 +6,10 @@ import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedButton
@@ -40,7 +38,6 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
     val objetoEliminado = remember { mutableStateOf(false) }
     val addFileLauncher = managedActivityResultLauncher(context, navController)
     textoTopBar.value = stringResource(id = R.string.bienvenido)
-
 
     LaunchedEffect(1, objetoEliminado.value) {
         objetosVistosRecientemente.value = buscarObjetosVistosRecientementeEnOrdenUltimaVisualizacion(context)

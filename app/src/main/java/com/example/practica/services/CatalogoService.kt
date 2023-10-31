@@ -7,14 +7,13 @@ import retrofit2.http.Query
 
 data class Objeto3d(
     var name: String,
-    var img: String
+    var imgUrl: String
 )
 
 interface CatalogoApiService {
     @GET("/catalogo")
     suspend fun getObjetos3d(): List<Objeto3d>
 
-    
     @GET("/catalogo")
     suspend fun getObjetoPorNombre(@Query("name") name: String): String
 
