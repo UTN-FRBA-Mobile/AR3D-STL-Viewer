@@ -33,7 +33,7 @@ fun PantallaSinConexionAInternet(
     textoTopBar: MutableState<String>
 ) {
     textoTopBar.value =  stringResource(id = R.string.sin_conexion)
-    val context = LocalContext.current
+    val context = navController.context
     val argumentos = navController.currentBackStackEntryAsState().value?.arguments
     val accionPorArgumento = argumentos?.getString("accionReintento")
 

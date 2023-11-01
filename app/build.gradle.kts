@@ -50,7 +50,7 @@ android {
 }
 
 dependencies {
-
+    implementation("androidx.paging:paging-compose:1.0.0-alpha18")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.6.4")
 

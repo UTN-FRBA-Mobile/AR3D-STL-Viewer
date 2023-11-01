@@ -33,20 +33,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.paging.LoadState
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import coil.compose.SubcomposeAsyncImage
 import com.example.practica.R
 import com.example.practica.services.Objeto3d
 import com.example.practica.utils.hayConexionAInternet
 import com.example.practica.utils.lanzarVistaPrevia
 import com.example.practica.viewmodel.BusquedaArchivoStlViewModel
-import com.example.practica.viewmodel.CatalogoViewModel
+import com.example.practica.viewmodel.CatalogoInfinito
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -55,31 +59,19 @@ import java.io.OutputStream
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>) {
-    val context = LocalContext.current
+    val context = navController.context
     textoTopBar.value = stringResource(id = R.string.catalogo)
 
-    val catalogoViewModel: CatalogoViewModel = viewModel()
-    val catalogo by catalogoViewModel.catalogo.observeAsState(emptyList())
-    val error by catalogoViewModel.error.observeAsState(false)
-    val isLoadingCatalogo by catalogoViewModel.isLoading.observeAsState(true)
     val estadoAlGuardarArchivo = remember { mutableStateOf(EstadoAlGuardarArchivo()) }
-
-    val verSpinnerCargandoCatalogo = remember { mutableStateOf(isLoadingCatalogo) }
-    val verPopUpError = remember { mutableStateOf(error) }
+    val verPopUpError = remember { mutableStateOf(false) }
 
     val busquedaArchivoStlViewModel: BusquedaArchivoStlViewModel = viewModel()
     val errorBusquedaArchivoStl by busquedaArchivoStlViewModel.error.observeAsState(false)
     val archivoStl by busquedaArchivoStlViewModel.archivoStl.observeAsState(null)
 
-    LaunchedEffect(catalogo) {
-        catalogoViewModel.getCatalogo()
-        verSpinnerCargandoCatalogo.value = isLoadingCatalogo
-    }
-
-    LaunchedEffect(error) {
-        verPopUpError.value = error
-        verSpinnerCargandoCatalogo.value = isLoadingCatalogo
-    }
+    val pagingSource = remember { CatalogoInfinito() }
+    val pager = remember { Pager(PagingConfig(pageSize = 2)) { pagingSource } }
+    val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
 
     LaunchedEffect(archivoStl) {
         if(archivoStl != null) {
@@ -87,20 +79,26 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
         }
     }
 
-    if(verSpinnerCargandoCatalogo.value) {
-        Spinner()
-    } else {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            catalogo.let {
-                items(it.size) { index ->
-                    CardObjeto3d(context, it[index], esUltimoElemento(index, catalogo), busquedaArchivoStlViewModel)
+    val loadState = lazyPagingItems.loadState
+    when (loadState.refresh) {
+        is LoadState.Loading -> {
+            Spinner()
+        }
+        is LoadState.Error -> {
+            verPopUpError.value = true
+        }
+        else -> {
+            LazyColumn {
+                items(lazyPagingItems) { item ->
+                    if (item != null) {
+                        CardObjeto3d(context, item, busquedaArchivoStlViewModel)
+                    }
                 }
             }
         }
-        ToastConfirmacionDescargaArchivo(estadoAlGuardarArchivo, errorBusquedaArchivoStl)
     }
+
+    ToastConfirmacionDescargaArchivo(estadoAlGuardarArchivo, errorBusquedaArchivoStl)
 
     PopUp(
         verPopUp = verPopUpError,
@@ -118,7 +116,6 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
 fun CardObjeto3d(
     context: Context,
     objeto3d: Objeto3d,
-    ultimoElemento: Boolean = false,
     busquedaArchivoStlViewModel: BusquedaArchivoStlViewModel
 ) {
     val cargandoVistaPrevia = remember { mutableStateOf(false) }
@@ -136,7 +133,6 @@ fun CardObjeto3d(
         colors = CardDefaults
             .cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         modifier = Modifier
-            .then(modifierUltimoElementoCatalogo(ultimoElemento))
             .fillMaxWidth()
             .padding(16.dp, 16.dp, 16.dp, 0.dp)
     ) {
@@ -282,18 +278,6 @@ fun guardarArchivoStl(name: String, contenidoArchivoStl: String, estadoAlGuardar
         }
     } catch (ex: Exception) {
         estadoAlGuardarArchivo.value = EstadoAlGuardarArchivo("ERROR", name)
-    }
-}
-
-fun esUltimoElemento(index: Int, catalogo: List<Objeto3d>): Boolean {
-    return index == catalogo.size - 1
-}
-
-fun modifierUltimoElementoCatalogo(ultimoElemento: Boolean): Modifier {
-    return if (ultimoElemento) {
-        Modifier.padding(bottom = 16.dp)
-    } else {
-        Modifier
     }
 }
 

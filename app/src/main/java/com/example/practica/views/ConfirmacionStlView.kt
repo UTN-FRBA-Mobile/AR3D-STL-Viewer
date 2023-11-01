@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ConfirmarStl(navController: NavHostController, textoTopBar: MutableState<String>) {
-    val context = LocalContext.current
+    val context = navController.context
     textoTopBar.value = "Confirmación archivo STL"
 
     val errorLanzarVistaPrevia = remember { mutableStateOf(false) }

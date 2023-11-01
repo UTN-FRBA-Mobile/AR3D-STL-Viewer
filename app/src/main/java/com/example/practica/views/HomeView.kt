@@ -33,7 +33,7 @@ import com.example.practica.utils.hayConexionAInternet
 
 @Composable
 fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
-    val context = LocalContext.current
+    val context = navController.context
     val objetosVistosRecientemente = remember { mutableStateOf<List<String>>(emptyList()) }
     val objetoEliminado = remember { mutableStateOf(false) }
     val addFileLauncher = managedActivityResultLauncher(context, navController)
