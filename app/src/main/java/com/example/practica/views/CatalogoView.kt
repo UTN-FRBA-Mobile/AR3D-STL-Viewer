@@ -95,28 +95,13 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
                     }
                 }
                 item {
-                    if(hayConexionAInternet(context)) {
-                        if (!loadState.append.endOfPaginationReached) {
-                            Spinner(modifier = Modifier.padding(top = 16.dp, bottom = 24.dp))
-                        } else {
-                            Box(modifier = Modifier.padding(top = 16.dp)) {}
+                    if (!loadState.append.endOfPaginationReached) {
+                        Spinner(modifier = Modifier.padding(top = 16.dp, bottom = 24.dp))
+                        if(hayConexionAInternet(context)) {
+                            lazyPagingItems.retry()
                         }
                     } else {
-                        if (!loadState.append.endOfPaginationReached) {
-                            MensajeToast(
-                                texto = stringResource(id = R.string.sin_conexion),
-                                Color.Red,
-                                esVisible = { !hayConexionAInternet(context = context) }
-                            )
-                            Button(
-                                onClick = { lazyPagingItems.retry() },
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(16.dp)
-                            ) {
-                                Text("Reintentar")
-                            }
-                        }
+                        Box(modifier = Modifier.padding(top = 16.dp)) {}
                     }
                 }
             }
