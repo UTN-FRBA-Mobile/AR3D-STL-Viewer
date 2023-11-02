@@ -24,10 +24,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.practica.R
 import com.example.practica.utils.buscarNombreArchivo
 import com.example.practica.utils.lanzarVistaPrevia
 import kotlinx.coroutines.CoroutineScope
@@ -37,7 +39,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ConfirmarStl(navController: NavHostController, textoTopBar: MutableState<String>) {
     val context = navController.context
-    textoTopBar.value = "Confirmación archivo STL"
+    textoTopBar.value = stringResource(id = R.string.confirmar_archivo)
 
     val errorLanzarVistaPrevia = remember { mutableStateOf(false) }
     val argumentos = navController.currentBackStackEntryAsState().value?.arguments
@@ -64,7 +66,7 @@ fun ConfirmarStl(navController: NavHostController, textoTopBar: MutableState<Str
         ) {
             Row {
                 Text(
-                    text = "Seleccionaste el archivo",
+                    text = stringResource(id = R.string.archivo_seleccionado),
                     Modifier.padding(start = 16.dp, top= 16.dp, end = 0.dp, bottom = 16.dp)
                 )
                 Text(
@@ -81,7 +83,7 @@ fun ConfirmarStl(navController: NavHostController, textoTopBar: MutableState<Str
                     .padding(top = 16.dp, bottom = 8.dp)
                     .fillMaxWidth()
             ) {
-                Text(text = "Buscar otro archivo")
+                Text(text = stringResource(id = R.string.buscar_otro_archivo))
             }
             Button(
                 onClick = {
@@ -92,7 +94,7 @@ fun ConfirmarStl(navController: NavHostController, textoTopBar: MutableState<Str
                     .fillMaxWidth()
             ) {
                 if (cargandoStl.value) SpinnerButton()
-                else Text(text = "Confirmar")
+                else Text(text = stringResource(id = R.string.confirmar))
             }
         }
     }

@@ -22,9 +22,9 @@
     <string name="descarga_stl">STL Download</string>
     <string name="querer_guardar_stl">Do you want to save the file</string>
     <string name="no">No</string>
-    <string name="archivo">Archivo</string>
-    <string name="guardado">guardado!</string>
-    <string name="error_descargando_archivo">Error al descargar el archivo</string>
+    <string name="archivo">File</string>
+    <string name="guardado">saved!</string>
+    <string name="error_descargando_archivo">Error downloading the file</string>
 
     <string name="searching_planes">Searching for surfaces...</string>
     <string name="waiting_taps">Tap on a surface to place the object.</string>
@@ -41,6 +41,10 @@
     <string name="insufficient_light_android_s_message">Too dark. Try moving to a well-lit area.\nAlso, make sure the Block Camera is set to off in system settings.</string>
     <string name="bad_state_message">Tracking lost due to bad internal state. Please try restarting the AR experience.</string>
     <string name="camera_unavailable_message">Another app is using the camera. Tap on this app or try closing the other one.</string>
+    <string name="confirmar_archivo">STL file confirmation</string>
+    <string name="archivo_seleccionado">You selected the file</string>
+    <string name="buscar_otro_archivo">Find another file</string>
+    <string name="confirmar">Confirm</string>
     <string-array name="depth_options_array">
         <item>Enable depth</item>
         <item>Show depth map</item>

@@ -46,6 +46,10 @@
     <string name="insufficient_light_android_s_message">Área muy oscura.\nAsegurate que el bloqueo de cámara está apagado en las configuraciones.</string>
     <string name="bad_state_message">Traqueo perdido debido a un mal estado interno. Por favor intenta reinicial la app.</string>
     <string name="camera_unavailable_message">Otra app está utilizando la cámara, intentá cerrarla.</string>
+    <string name="confirmar_archivo">Confirmación archivo STL</string>
+    <string name="archivo_seleccionado">Seleccionaste el archivo</string>
+    <string name="buscar_otro_archivo">Buscar otro archivo</string>
+    <string name="confirmar">Confirmar</string>
 
 
 </resources>
