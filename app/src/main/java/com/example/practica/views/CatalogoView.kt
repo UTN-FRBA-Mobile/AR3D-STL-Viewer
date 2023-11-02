@@ -215,7 +215,7 @@ fun CardObjeto3d(
             },
             textoConfirmation = stringResource(id = R.string.si),
             dialogTitle = stringResource(id = R.string.descarga_stl),
-            dialogText = stringResource(id = R.string.querer_guardar_stl) + "${objeto3d.name}.stl?",
+            dialogText = stringResource(id = R.string.querer_guardar_stl) + " ${objeto3d.name}.stl?",
             textoDismiss = stringResource(id = R.string.no),
         )
         PopUp(
@@ -240,7 +240,7 @@ fun ToastConfirmacionDescargaArchivo(
     }
     when(estadoAlGuardarArchivo.value.estado) {
         "GUARDADO" -> MensajeToast(
-            texto = stringResource(id = R.string.archivo)+" ${estadoAlGuardarArchivo.value.nombreArchivo}.stl " + stringResource(id = R.string.guardado),
+            texto = stringResource(id = R.string.archivo) + " ${estadoAlGuardarArchivo.value.nombreArchivo}.stl " + stringResource(id = R.string.guardado),
             MaterialTheme.colorScheme.secondary,
             onDismiss = {estadoAlGuardarArchivo.value = EstadoAlGuardarArchivo()}
         )
