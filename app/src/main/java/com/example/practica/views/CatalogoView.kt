@@ -15,12 +15,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
@@ -84,7 +82,7 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
     val loadState = lazyPagingItems.loadState
     when (loadState.refresh) {
         is LoadState.Loading -> {
-            Spinner()
+            Spinner(Modifier.padding(top = 8.dp, bottom = 8.dp))
         }
         is LoadState.Error -> {
             verPopUpError.value = true
@@ -97,12 +95,11 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
                     }
                 }
                 item {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                            .wrapContentSize(Alignment.Center)
-                    )
+                    if(!loadState.append.endOfPaginationReached) {
+                        Spinner(modifier = Modifier.padding(top = 16.dp, bottom = 24.dp))
+                    } else {
+                        Box (modifier = Modifier.padding(top = 16.dp)) {}
+                    }
                 }
             }
         }
@@ -158,7 +155,7 @@ fun CardObjeto3d(
                         .align(Alignment.CenterHorizontally),
                     model = objeto3d.imgUrl,
                     loading = {
-                        Spinner()
+                        Spinner(Modifier.padding(top = 8.dp, bottom = 8.dp))
                     },
                     contentDescription = null,
                 )

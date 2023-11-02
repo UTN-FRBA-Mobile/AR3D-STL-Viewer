@@ -14,11 +14,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-@Preview
 @Composable
-fun Spinner() {
+fun Spinner(modifier: Modifier) {
+    val modifierFinal = modifier.then(Modifier.fillMaxSize())
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifierFinal,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
