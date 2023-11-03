@@ -16,13 +16,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -34,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -73,11 +81,15 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
     val pager = remember { Pager(PagingConfig(pageSize = 2)) { pagingSource } }
     val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
 
+    val textoIngresado = remember {mutableStateOf("")}
+
     LaunchedEffect(archivoStl) {
         if(archivoStl != null) {
             guardarArchivoStl(archivoStl!!.nombre, archivoStl!!.contenido, estadoAlGuardarArchivo, context)
         }
     }
+
+    InputBusquedaObjetos(textoIngresado)
 
     val loadState = lazyPagingItems.loadState
     when (loadState.refresh) {
@@ -88,7 +100,9 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
             verPopUpError.value = true
         }
         else -> {
-            LazyColumn {
+            LazyColumn(
+                modifier = Modifier.padding(top = 90.dp),
+            ) {
                 items(lazyPagingItems) { item ->
                     if (item != null) {
                         CardObjeto3d(context, item, busquedaArchivoStlViewModel)
@@ -96,12 +110,10 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
                 }
                 item {
                     if (!loadState.append.endOfPaginationReached) {
-                        Spinner(modifier = Modifier.padding(top = 16.dp, bottom = 24.dp))
+                        Spinner(modifier = Modifier.padding(top = 8.dp, bottom = 24.dp))
                         if(hayConexionAInternet(context)) {
                             lazyPagingItems.retry()
                         }
-                    } else {
-                        Box(modifier = Modifier.padding(top = 16.dp)) {}
                     }
                 }
             }
@@ -120,6 +132,34 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
         dialogText = "Error al obtener el catálogo, volvé a intentar",
         dialogTitle = "Error"
     )
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun InputBusquedaObjetos(textoIngresado: MutableState<String>) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        OutlinedTextField(
+            placeholder = { Text("Buscar...") },
+            modifier = Modifier
+                .padding(top = 16.dp, start = 0.dp, end = 0.dp, bottom = 16.dp),
+            value = textoIngresado.value,
+            onValueChange = { textoIngresado.value = it }
+        )
+        TextButton(
+            onClick = {}
+        ) {
+            Icon(
+                Icons.Rounded.Search,
+                modifier = Modifier.size(32.dp),
+                contentDescription = stringResource(id = R.string.busqueda_catalogo),
+            )
+        }
+    }
 }
 
 @Composable
@@ -144,7 +184,7 @@ fun CardObjeto3d(
             .cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp, 16.dp, 16.dp, 0.dp)
+            .padding(16.dp, 0.dp, 16.dp, 16.dp)
     ) {
         Box() {
             Column(

@@ -50,6 +50,7 @@
     <string name="archivo_seleccionado">Seleccionaste el archivo</string>
     <string name="buscar_otro_archivo">Buscar otro archivo</string>
     <string name="confirmar">Confirmar</string>
+    <string name="busqueda_catalogo" />
 
 
 </resources>
