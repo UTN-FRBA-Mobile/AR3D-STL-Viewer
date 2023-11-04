@@ -12,7 +12,7 @@ data class Objeto3d(
 
 interface CatalogoApiService {
     @GET("/catalogo")
-    suspend fun getObjetos3d(@Query("page") page: Int): List<Objeto3d>
+    suspend fun getObjetos3d(@Query("page") page: Int, @Query("search") search: String = ""): List<Objeto3d>
 
     @GET("/catalogo")
     suspend fun getObjetoPorNombre(@Query("name") name: String): String
