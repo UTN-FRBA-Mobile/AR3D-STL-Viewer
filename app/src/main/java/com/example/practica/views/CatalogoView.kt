@@ -117,7 +117,7 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
             navController.popBackStack()
         },
         "Ok",
-        dialogText = "Error al obtener el catálogo, volvé a intentar",
+        dialogText = stringResource(id = R.string.catalog_error),
         dialogTitle = "Error"
     )
 }
@@ -144,7 +144,7 @@ private fun ListaObjetos(
             if(lazyPagingItems.itemCount == 0) {
                 Text(
                     modifier = Modifier.padding(start = 16.dp, top = 90.dp),
-                    text = "No se encontraron resultados para tu búsqueda."
+                    text = stringResource(id = R.string.no_results_found)
                 )
             } else {
                 LazyColumn(
@@ -182,7 +182,7 @@ private fun InputBusquedaObjetos(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, top = 16.dp),
-        placeholder = { Text("Buscar...") },
+        placeholder = { Text(stringResource(id = R.string.buscar)) },
         value = textoIngresado.value,
         onValueChange = {  if (it.length <= maximaCantidadCaracteres) textoIngresado.value = it },
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),

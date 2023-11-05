@@ -50,6 +50,9 @@
     <string name="archivo_seleccionado">Seleccionaste el archivo</string>
     <string name="buscar_otro_archivo">Buscar otro archivo</string>
     <string name="confirmar">Confirmar</string>
+    <string name="buscar">Buscar...</string>
+    <string name="no_results_found">No se encontraron resultados para su búsqueda, vuelva a intentar</string>
+    <string name="catalog_error">Error al obtener el catálogo, volvé a intentar</string>
     <string name="busqueda_catalogo" />
 
 
