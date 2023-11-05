@@ -39,8 +39,10 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -51,6 +53,7 @@ import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.compose.SubcomposeAsyncImage
@@ -59,6 +62,7 @@ import com.example.practica.services.Objeto3d
 import com.example.practica.utils.hayConexionAInternet
 import com.example.practica.utils.lanzarVistaPrevia
 import com.example.practica.viewmodel.BusquedaArchivoStlViewModel
+import com.example.practica.viewmodel.BusquedaObjeto3dViewModel
 import com.example.practica.viewmodel.CatalogoInfinito
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -78,11 +82,14 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
     val errorBusquedaArchivoStl by busquedaArchivoStlViewModel.error.observeAsState(false)
     val archivoStl by busquedaArchivoStlViewModel.archivoStl.observeAsState(null)
 
-    val pagingSource = remember { CatalogoInfinito() }
-    val pager = remember { Pager(PagingConfig(pageSize = 2)) { pagingSource } }
-    val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
-
+    val busquedaObjeto3dViewModel: BusquedaObjeto3dViewModel = viewModel()
     val textoIngresado = remember {mutableStateOf("")}
+    val buscar = remember { mutableStateOf(false) }
+
+    val tamanioPagina = 2
+    val pagingSource = remember { mutableStateOf(CatalogoInfinito(busquedaObjeto3dViewModel)) }
+    val pager = remember { mutableStateOf(Pager(PagingConfig(pageSize = tamanioPagina)) { pagingSource.value }) }
+    var lazyPagingItems = pager.value.flow.collectAsLazyPagingItems()
 
     LaunchedEffect(archivoStl) {
         if(archivoStl != null) {
@@ -90,36 +97,16 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
         }
     }
 
-    InputBusquedaObjetos(textoIngresado)
-
-    val loadState = lazyPagingItems.loadState
-    when (loadState.refresh) {
-        is LoadState.Loading -> {
-            Spinner(Modifier.padding(top = 8.dp, bottom = 8.dp))
-        }
-        is LoadState.Error -> {
-            verPopUpError.value = true
-        }
-        else -> {
-            LazyColumn(
-                modifier = Modifier.padding(top = 90.dp),
-            ) {
-                items(lazyPagingItems) { item ->
-                    if (item != null) {
-                        CardObjeto3d(context, item, busquedaArchivoStlViewModel)
-                    }
-                }
-                item {
-                    if (!loadState.append.endOfPaginationReached) {
-                        Spinner(modifier = Modifier.padding(top = 8.dp, bottom = 24.dp))
-                        if(hayConexionAInternet(context)) {
-                            lazyPagingItems.retry()
-                        }
-                    }
-                }
-            }
-        }
+    LaunchedEffect(buscar.value) {
+        pagingSource.value = CatalogoInfinito(busquedaObjeto3dViewModel)
+        busquedaObjeto3dViewModel.setTextoABuscar(textoIngresado.value)
+        pager.value = Pager(PagingConfig(pageSize = tamanioPagina)) { pagingSource.value }
+        buscar.value = false
     }
+
+    InputBusquedaObjetos(textoIngresado, buscar)
+
+    ListaObjetos(lazyPagingItems, verPopUpError, context, busquedaArchivoStlViewModel)
 
     ToastConfirmacionDescargaArchivo(estadoAlGuardarArchivo, errorBusquedaArchivoStl)
 
@@ -136,9 +123,60 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
-private fun InputBusquedaObjetos(textoIngresado: MutableState<String>) {
+private fun ListaObjetos(
+    lazyPagingItems: LazyPagingItems<Objeto3d>,
+    verPopUpError: MutableState<Boolean>,
+    context: Context,
+    busquedaArchivoStlViewModel: BusquedaArchivoStlViewModel
+) {
+    val loadState = lazyPagingItems.loadState
+
+    when (loadState.refresh) {
+        is LoadState.Loading -> {
+            Spinner(Modifier.padding(top = 8.dp, bottom = 8.dp))
+        }
+
+        is LoadState.Error -> {
+            verPopUpError.value = true
+        }
+
+        else -> {
+            if(lazyPagingItems.itemCount == 0) {
+                Text(
+                    modifier = Modifier.padding(start = 16.dp, top = 90.dp),
+                    text = "No se encontraron resultados para tu búsqueda."
+                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier.padding(top = 90.dp),
+                ) {
+                    items(lazyPagingItems) { item ->
+                        if (item != null) {
+                            CardObjeto3d(context, item, busquedaArchivoStlViewModel)
+                        }
+                    }
+                    item {
+                        if (!loadState.append.endOfPaginationReached) {
+                            Spinner(modifier = Modifier.padding(top = 8.dp, bottom = 24.dp))
+                            if (hayConexionAInternet(context)) {
+                                lazyPagingItems.retry()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+private fun InputBusquedaObjetos(
+    textoIngresado: MutableState<String>,
+    buscar: MutableState<Boolean>
+) {
     val maximaCantidadCaracteres = 40
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     OutlinedTextField(
         modifier = Modifier
@@ -149,7 +187,10 @@ private fun InputBusquedaObjetos(textoIngresado: MutableState<String>) {
         onValueChange = {  if (it.length <= maximaCantidadCaracteres) textoIngresado.value = it },
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(
-            onSearch = {}
+            onSearch = {
+                buscar.value = true
+                keyboardController?.hide()
+            }
         ),
         singleLine = true,
         trailingIcon = {
