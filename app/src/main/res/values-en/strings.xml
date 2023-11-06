@@ -7,7 +7,7 @@
     <string name="cerrar_toast" />
     <string name="waring_sin_internet" />
     <string name="catalogo">Catalog</string>
-    <string name="buscar_arhivo">Search file</string>
+    <string name="buscar_arhivo">Search .stl file</string>
     <string name="sin_conexion">No Internet connection</string>
     <string name="subir_archivo_stl">Upload your .STL or search in our catalog to watch it in augmented reality</string>
     <string name="error_al_previsualizar">Error pre-visualizing the object, try it again</string>

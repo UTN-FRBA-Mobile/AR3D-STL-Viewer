@@ -16,10 +16,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -131,6 +133,7 @@ private fun ListaObjetos(
 ) {
     val loadState = lazyPagingItems.loadState
 
+
     when (loadState.refresh) {
         is LoadState.Loading -> {
             Spinner(Modifier.padding(top = 8.dp, bottom = 8.dp))
@@ -148,7 +151,9 @@ private fun ListaObjetos(
                 )
             } else {
                 LazyColumn(
-                    modifier = Modifier.padding(top = 90.dp),
+                    state = rememberLazyListState(),
+                    modifier = Modifier
+                        .padding(top = 90.dp),
                 ) {
                     items(lazyPagingItems) { item ->
                         if (item != null) {
@@ -175,14 +180,14 @@ private fun InputBusquedaObjetos(
     textoIngresado: MutableState<String>,
     buscar: MutableState<Boolean>
 ) {
-    val maximaCantidadCaracteres = 40
+    val maximaCantidadCaracteres = 35
     val keyboardController = LocalSoftwareKeyboardController.current
 
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, top = 16.dp),
-        placeholder = { Text("Buscar...") },
+        placeholder = { Text("Buscar") },
         value = textoIngresado.value,
         onValueChange = {  if (it.length <= maximaCantidadCaracteres) textoIngresado.value = it },
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
@@ -193,11 +198,17 @@ private fun InputBusquedaObjetos(
             }
         ),
         singleLine = true,
+        leadingIcon = {
+            Icon(
+                Icons.Default.Search,
+                contentDescription = stringResource(id = R.string.busqueda_catalogo)
+            )
+        },
         trailingIcon = {
             if (textoIngresado.value.isNotBlank())
                 IconButton(onClick = { textoIngresado.value = "" }) {
                     Icon(
-                        Icons.Rounded.Clear,
+                        Icons.Default.Clear,
                         contentDescription = stringResource(id = R.string.busqueda_catalogo),
                     )
                 }

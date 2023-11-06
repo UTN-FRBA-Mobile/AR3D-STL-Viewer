@@ -22,7 +22,7 @@
     <string name="cerrar_toast" />
     <string name="waring_sin_internet" />
     <string name="catalogo">Catálogo</string>
-    <string name="buscar_arhivo">Buscar archivo</string>
+    <string name="buscar_arhivo">Buscar archivo .stl</string>
     <string name="sin_conexion">Sin conexión a internet!</string>
     <string name="subir_archivo_stl">Subí tu archivo .STL o buscá en nuestro catálogo para verlo en realidad aumentada</string>
     <string name="error_al_previsualizar">Error al previsualizar el objeto, volvé a intentar</string>

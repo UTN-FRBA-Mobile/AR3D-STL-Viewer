@@ -1,12 +1,17 @@
 package com.example.practica.views
 
 import android.content.Context
+import android.net.Uri
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -27,15 +32,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.practica.R
+import com.example.practica.components.BotonFlotanteBusquedaArchivoStl
 import com.example.practica.repository.eliminarObjetoVistoRecientemente
+import com.example.practica.utils.buscarNombreArchivo
 
 @Composable
 fun ListaObjetosRecientes(
     objetosVistosRecientemente: List<String>,
     context: Context,
-    objetoEliminado: MutableState<Boolean>
+    objetoEliminado: MutableState<Boolean>,
+    navController: NavHostController
 ) {
+    val addFileLauncher = managedActivityResultLauncher(context, navController)
+
     Text(
         modifier = Modifier
             .padding(0.dp, 16.dp, 0.dp, 0.dp),
@@ -44,13 +55,22 @@ fun ListaObjetosRecientes(
     Box (
         modifier = Modifier
             .padding(0.dp, 8.dp, 0.dp, 0.dp)
-            .fillMaxHeight()) {
+            .fillMaxSize()
+    ) {
         LazyColumn() {
             objetosVistosRecientemente.let {
                 items(it.size) { index ->
                     ObjetoReciente(it[index], context, objetoEliminado)
                 }
+                item {
+                    Spacer(modifier = Modifier.height(83.dp))
+                }
             }
+        }
+        Box(
+            modifier = Modifier.align(Alignment.BottomEnd)
+        ) {
+            BotonFlotanteBusquedaArchivoStl(addFileLauncher)
         }
     }
 }
@@ -134,4 +154,15 @@ fun MenuAccionesObjetoReciente(
 
 fun eliminarExtensionObj(nombreArchivoObj: String): String {
     return nombreArchivoObj.removeSuffix(".obj")
+}
+
+@Composable
+private fun managedActivityResultLauncher(context: Context, navController: NavHostController): ManagedActivityResultLauncher<String, Uri?> {
+    val addFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
+        if (it != null) {
+            val fileText = buscarNombreArchivo(context, it)
+            navController.navigate("confirmarstl/${fileText}")
+        }
+    }
+    return addFileLauncher
 }
