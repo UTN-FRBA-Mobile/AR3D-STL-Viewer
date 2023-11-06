@@ -71,13 +71,8 @@ fun ConfirmarStl(navController: NavHostController, textoTopBar: MutableState<Str
             ) {
                 Row {
                     Text(
-                        text = stringResource(id = R.string.archivo_seleccionado),
+                        text = stringResource(id = R.string.archivo_seleccionado) + " ${nombreArchivo.value}",
                         Modifier.padding(start = 16.dp, top= 16.dp, end = 0.dp, bottom = 16.dp)
-                    )
-                    Text(
-                        text = "${nombreArchivo.value}",
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(start = 4.dp, 16.dp)
                     )
                 }
             }
