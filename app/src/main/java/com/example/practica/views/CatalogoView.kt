@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -188,6 +189,7 @@ private fun InputBusquedaObjetos(
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, top = 16.dp),
         placeholder = { Text("Buscar") },
+        shape = RoundedCornerShape(50),
         value = textoIngresado.value,
         onValueChange = {  if (it.length <= maximaCantidadCaracteres) textoIngresado.value = it },
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
