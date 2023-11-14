@@ -77,6 +77,8 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
 
     val estadoAlGuardarArchivo = remember { mutableStateOf(EstadoAlGuardarArchivo()) }
     val verPopUpError = remember { mutableStateOf(false) }
+    val verTextNotFound = remember { mutableStateOf(false) }
+
 
     val busquedaArchivoStlViewModel: BusquedaArchivoStlViewModel = viewModel()
     val errorBusquedaArchivoStl by busquedaArchivoStlViewModel.error.observeAsState(false)
@@ -104,9 +106,9 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
         buscar.value = false
     }
 
-    InputBusquedaObjetos(textoIngresado, buscar)
+    InputBusquedaObjetos(textoIngresado, buscar, verTextNotFound)
 
-    ListaObjetos(lazyPagingItems, verPopUpError, context, busquedaArchivoStlViewModel)
+    ListaObjetos(lazyPagingItems, verPopUpError, context, busquedaArchivoStlViewModel, textoIngresado, verTextNotFound)
 
     ToastConfirmacionDescargaArchivo(estadoAlGuardarArchivo, errorBusquedaArchivoStl)
 
@@ -120,6 +122,8 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
         dialogText = stringResource(id = R.string.catalog_error),
         dialogTitle = "Error"
     )
+
+    NoResultsFound(verTextNotFound)
 }
 
 @Composable
@@ -127,7 +131,9 @@ private fun ListaObjetos(
     lazyPagingItems: LazyPagingItems<Objeto3d>,
     verPopUpError: MutableState<Boolean>,
     context: Context,
-    busquedaArchivoStlViewModel: BusquedaArchivoStlViewModel
+    busquedaArchivoStlViewModel: BusquedaArchivoStlViewModel,
+    textoIngresado: MutableState<String>,
+    verTextNotFound: MutableState<Boolean>
 ) {
     val loadState = lazyPagingItems.loadState
 
@@ -137,7 +143,13 @@ private fun ListaObjetos(
         }
 
         is LoadState.Error -> {
-            verPopUpError.value = true
+            if (textoIngresado.value.isEmpty()) {
+                // Set verPopUpError to true when there's an error and textoIngresado is empty
+                verPopUpError.value = true
+            }
+            else {
+                verTextNotFound.value = true
+            }
         }
 
         else -> {
@@ -147,6 +159,7 @@ private fun ListaObjetos(
                     text = stringResource(id = R.string.no_results_found)
                 )
             } else {
+                verTextNotFound.value = false
                 LazyColumn(
                     modifier = Modifier.padding(top = 90.dp),
                 ) {
@@ -173,7 +186,8 @@ private fun ListaObjetos(
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 private fun InputBusquedaObjetos(
     textoIngresado: MutableState<String>,
-    buscar: MutableState<Boolean>
+    buscar: MutableState<Boolean>,
+    verTextNotFound: MutableState<Boolean>
 ) {
     val maximaCantidadCaracteres = 40
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -184,7 +198,7 @@ private fun InputBusquedaObjetos(
             .padding(start = 16.dp, end = 16.dp, top = 16.dp),
         placeholder = { Text(stringResource(id = R.string.buscar)) },
         value = textoIngresado.value,
-        onValueChange = {  if (it.length <= maximaCantidadCaracteres) textoIngresado.value = it },
+        onValueChange = {  if (it.length <= maximaCantidadCaracteres) textoIngresado.value = it; buscar.value = true; verTextNotFound.value = false},
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(
             onSearch = {
@@ -195,7 +209,7 @@ private fun InputBusquedaObjetos(
         singleLine = true,
         trailingIcon = {
             if (textoIngresado.value.isNotBlank())
-                IconButton(onClick = { textoIngresado.value = "" }) {
+                IconButton(onClick = {textoIngresado.value = ""}) {
                     Icon(
                         Icons.Rounded.Clear,
                         contentDescription = stringResource(id = R.string.busqueda_catalogo),
