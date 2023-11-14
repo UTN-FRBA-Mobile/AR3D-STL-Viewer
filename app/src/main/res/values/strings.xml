@@ -53,7 +53,7 @@
     <string name="buscar">Buscar...</string>
     <string name="no_results_found">No se encontraron resultados para su búsqueda, vuelva a intentar</string>
     <string name="catalog_error">Error al obtener el catálogo, volvé a intentar</string>
-    <string name="busqueda_catalogo" />
+    <string name="busqueda_catalogo" translatable="false" />
 
 
 </resources>
