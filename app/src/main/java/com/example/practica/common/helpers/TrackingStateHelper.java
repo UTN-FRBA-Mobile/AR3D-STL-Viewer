@@ -29,6 +29,9 @@ public final class TrackingStateHelper {
   private static String INSUFFICIENT_LIGHT_MESSAGE;
   private static String INSUFFICIENT_LIGHT_ANDROID_S_MESSAGE;
   private static String EXCESSIVE_MOTION_MESSAGE;
+  private static String BAD_STATE_MESSAGE;
+  private static String CAMERA_UNAVAILABLE_MESSAGE;
+  private static String INSUFFICIENT_FEATURES_MESSAGE;
   private TrackingState previousTrackingState;
 
   public TrackingStateHelper(Activity activity) {
@@ -36,14 +39,11 @@ public final class TrackingStateHelper {
     this.INSUFFICIENT_LIGHT_MESSAGE = MensajesArCore.getInsufficientLightMessage(activity);
     this.INSUFFICIENT_LIGHT_ANDROID_S_MESSAGE = MensajesArCore.getInsufficientLightAndroidSMessage(activity);
     this.EXCESSIVE_MOTION_MESSAGE = MensajesArCore.getExcessiveMotion(activity);
+    this.BAD_STATE_MESSAGE = MensajesArCore.getBadStateMessage(activity);
+    this.CAMERA_UNAVAILABLE_MESSAGE = MensajesArCore.getCameraUnavailableMessage(activity);
+    this.INSUFFICIENT_FEATURES_MESSAGE = MensajesArCore.getInsufficienteFeaturesMessage(activity);
   }
 
-  private static final String INSUFFICIENT_FEATURES_MESSAGE =
-      "Can't find anything. Aim device at a surface with more texture or color.";
-  private static final String BAD_STATE_MESSAGE =
-      "Tracking lost due to bad internal state. Please try restarting the AR experience.";
-  private static final String CAMERA_UNAVAILABLE_MESSAGE =
-      "Another app is using the camera. Tap on this app or try closing the other one.";
   private static final int ANDROID_S_SDK_VERSION = 31;
 
 
@@ -87,6 +87,6 @@ public final class TrackingStateHelper {
       case CAMERA_UNAVAILABLE:
         return CAMERA_UNAVAILABLE_MESSAGE;
     }
-    return "Unknown tracking failure reason: " + reason;
+    return "Error: " + reason;
   }
 }

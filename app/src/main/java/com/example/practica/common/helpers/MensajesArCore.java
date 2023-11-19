@@ -17,4 +17,16 @@ public class MensajesArCore {
     public static String getExcessiveMotion(Activity activity) {
         return activity.getString(R.string.excessive_motion);
     }
+
+    public static String getBadStateMessage(Activity activity) {
+        return activity.getString(R.string.bad_state_message);
+    }
+
+    public static String getCameraUnavailableMessage(Activity activity) {
+        return activity.getString(R.string.camera_unavailable_message);
+    }
+
+    public static String getInsufficienteFeaturesMessage(Activity activity) {
+        return activity.getString(R.string.insufficient_features_message);
+    }
 }
