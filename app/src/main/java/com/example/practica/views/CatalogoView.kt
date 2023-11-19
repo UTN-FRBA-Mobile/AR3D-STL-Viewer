@@ -61,12 +61,16 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.compose.SubcomposeAsyncImage
 import com.example.practica.R
+import com.example.practica.components.PopUp
+import com.example.practica.components.Spinner
+import com.example.practica.components.SpinnerButton
+import com.example.practica.components.Toast
 import com.example.practica.services.Objeto3d
 import com.example.practica.utils.hayConexionAInternet
 import com.example.practica.utils.lanzarVistaPrevia
 import com.example.practica.viewmodel.BusquedaArchivoStlViewModel
 import com.example.practica.viewmodel.BusquedaObjeto3dViewModel
-import com.example.practica.viewmodel.CatalogoInfinito
+import com.example.practica.viewmodel.CatalogoInfinitoViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -90,7 +94,7 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
     val buscar = remember { mutableStateOf(false) }
 
     val tamanioPagina = 2
-    val pagingSource = remember { mutableStateOf(CatalogoInfinito(busquedaObjeto3dViewModel)) }
+    val pagingSource = remember { mutableStateOf(CatalogoInfinitoViewModel(busquedaObjeto3dViewModel)) }
     val pager = remember { mutableStateOf(Pager(PagingConfig(pageSize = tamanioPagina)) { pagingSource.value }) }
     var lazyPagingItems = pager.value.flow.collectAsLazyPagingItems()
 
@@ -101,7 +105,7 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
     }
 
     LaunchedEffect(buscar.value) {
-        pagingSource.value = CatalogoInfinito(busquedaObjeto3dViewModel)
+        pagingSource.value = CatalogoInfinitoViewModel(busquedaObjeto3dViewModel)
         busquedaObjeto3dViewModel.setTextoABuscar(textoIngresado.value)
         pager.value = Pager(PagingConfig(pageSize = tamanioPagina)) { pagingSource.value }
         buscar.value = false
@@ -335,7 +339,7 @@ fun ToastConfirmacionDescargaArchivo(
         MensajeToastErrorAlGuardarArchivo(estadoAlGuardarArchivo)
     }
     when(estadoAlGuardarArchivo.value.estado) {
-        "GUARDADO" -> MensajeToast(
+        "GUARDADO" -> Toast(
             texto = stringResource(id = R.string.archivo) + " ${estadoAlGuardarArchivo.value.nombreArchivo}.stl " + stringResource(id = R.string.guardado),
             MaterialTheme.colorScheme.secondary,
             onDismiss = {estadoAlGuardarArchivo.value = EstadoAlGuardarArchivo()}
@@ -347,7 +351,7 @@ fun ToastConfirmacionDescargaArchivo(
 
 @Composable
 fun MensajeToastErrorAlGuardarArchivo(estadoAlGuardarArchivo: MutableState<EstadoAlGuardarArchivo>) {
-    MensajeToast(
+    Toast(
         texto = stringResource(id = R.string.error_descargando_archivo) + "${estadoAlGuardarArchivo.value.nombreArchivo}.stl!",
         Color.Red,
         onDismiss = {estadoAlGuardarArchivo.value = EstadoAlGuardarArchivo()}

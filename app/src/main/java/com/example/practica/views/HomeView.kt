@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.practica.R
 import com.example.practica.arcore.ArCoreActivity
+import com.example.practica.components.Toast
 import com.example.practica.repository.buscarObjetosVistosRecientementeEnOrdenUltimaVisualizacion
 import com.example.practica.utils.hayConexionAInternet
 
@@ -65,7 +66,7 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
         ListaObjetosRecientes(objetosVistosRecientemente.value, context, objetoEliminado, navController)
     }
 
-    MensajeToast(
+    Toast(
         texto = stringResource(id = R.string.sin_conexion),
         Color.Red,
         esVisible = { !hayConexionAInternet(context = context) }

@@ -24,27 +24,28 @@ import com.google.ar.core.TrackingState;
 
 /** Gets human readibly tracking failure reasons and suggested actions. */
 public final class TrackingStateHelper {
+
+  private final Activity activity;
+  private static String INSUFFICIENT_LIGHT_MESSAGE;
+  private static String INSUFFICIENT_LIGHT_ANDROID_S_MESSAGE;
+  private static String EXCESSIVE_MOTION_MESSAGE;
+  private TrackingState previousTrackingState;
+
+  public TrackingStateHelper(Activity activity) {
+    this.activity = activity;
+    this.INSUFFICIENT_LIGHT_MESSAGE = MensajesArCore.getInsufficientLightMessage(activity);
+    this.INSUFFICIENT_LIGHT_ANDROID_S_MESSAGE = MensajesArCore.getInsufficientLightAndroidSMessage(activity);
+    this.EXCESSIVE_MOTION_MESSAGE = MensajesArCore.getExcessiveMotion(activity);
+  }
+
   private static final String INSUFFICIENT_FEATURES_MESSAGE =
       "Can't find anything. Aim device at a surface with more texture or color.";
-  private static final String EXCESSIVE_MOTION_MESSAGE = "Moving too fast. Slow down.";
-  private static final String INSUFFICIENT_LIGHT_MESSAGE =
-      "Too dark. Try moving to a well-lit area.";
-  private static final String INSUFFICIENT_LIGHT_ANDROID_S_MESSAGE =
-      "Too dark. Try moving to a well-lit area."
-      + " Also, make sure the Block Camera is set to off in system settings.";
   private static final String BAD_STATE_MESSAGE =
       "Tracking lost due to bad internal state. Please try restarting the AR experience.";
   private static final String CAMERA_UNAVAILABLE_MESSAGE =
       "Another app is using the camera. Tap on this app or try closing the other one.";
   private static final int ANDROID_S_SDK_VERSION = 31;
 
-  private final Activity activity;
-
-  private TrackingState previousTrackingState;
-
-  public TrackingStateHelper(Activity activity) {
-    this.activity = activity;
-  }
 
   /** Keep the screen unlocked while tracking, but allow it to lock when tracking stops. */
   public void updateKeepScreenOnFlag(TrackingState trackingState) {

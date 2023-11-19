@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.practica.R
 import com.example.practica.components.BotonFlotanteBusquedaArchivoStl
+import com.example.practica.components.PopUp
 import com.example.practica.repository.eliminarObjetoVistoRecientemente
 import com.example.practica.utils.buscarNombreArchivo
 

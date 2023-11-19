@@ -5,7 +5,7 @@ import androidx.paging.PagingState
 import com.example.practica.services.Objeto3d
 import com.example.practica.services.catalogoApiService
 
-class CatalogoInfinito(busquedaObjeto3dViewModel: BusquedaObjeto3dViewModel) : PagingSource<Int, Objeto3d>() {
+class CatalogoInfinitoViewModel(busquedaObjeto3dViewModel: BusquedaObjeto3dViewModel) : PagingSource<Int, Objeto3d>() {
 
     val textoABuscar = busquedaObjeto3dViewModel.textoABuscar.value?: ""
 

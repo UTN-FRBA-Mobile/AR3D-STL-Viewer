@@ -32,6 +32,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.practica.R
 import com.example.practica.components.BotonFlotanteBusquedaArchivoStl
+import com.example.practica.components.PopUp
+import com.example.practica.components.SpinnerButton
 import com.example.practica.utils.buscarNombreArchivo
 import com.example.practica.utils.lanzarVistaPrevia
 import com.example.practica.viewmodel.ConfirmacionStlViewModel

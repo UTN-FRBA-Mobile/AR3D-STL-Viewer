@@ -1,4 +1,4 @@
-package com.example.practica.views
+package com.example.practica.components
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
