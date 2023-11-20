@@ -78,6 +78,7 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
     val estadoAlGuardarArchivo = remember { mutableStateOf(EstadoAlGuardarArchivo()) }
     val verPopUpError = remember { mutableStateOf(false) }
     val verTextNotFound = remember { mutableStateOf(false) }
+    val initialSearch = remember { mutableStateOf(true) }
 
 
     val busquedaArchivoStlViewModel: BusquedaArchivoStlViewModel = viewModel()
@@ -106,9 +107,9 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
         buscar.value = false
     }
 
-    InputBusquedaObjetos(textoIngresado, buscar, verTextNotFound)
+    InputBusquedaObjetos(textoIngresado, buscar, verTextNotFound, initialSearch)
 
-    ListaObjetos(lazyPagingItems, verPopUpError, context, busquedaArchivoStlViewModel, textoIngresado, verTextNotFound)
+    ListaObjetos(lazyPagingItems, verPopUpError, context, busquedaArchivoStlViewModel, textoIngresado, verTextNotFound, initialSearch)
 
     ToastConfirmacionDescargaArchivo(estadoAlGuardarArchivo, errorBusquedaArchivoStl)
 
@@ -133,7 +134,8 @@ private fun ListaObjetos(
     context: Context,
     busquedaArchivoStlViewModel: BusquedaArchivoStlViewModel,
     textoIngresado: MutableState<String>,
-    verTextNotFound: MutableState<Boolean>
+    verTextNotFound: MutableState<Boolean>,
+    initialSearch: MutableState<Boolean>
 ) {
     val loadState = lazyPagingItems.loadState
 
@@ -143,8 +145,8 @@ private fun ListaObjetos(
         }
 
         is LoadState.Error -> {
-            if (textoIngresado.value.isEmpty()) {
-                // Set verPopUpError to true when there's an error and textoIngresado is empty
+            if (textoIngresado.value.isEmpty() && initialSearch.value) {
+                // Set verPopUpError to true when there's an error, textoIngresado is empty and it's the initialSearch
                 verPopUpError.value = true
             }
             else {
@@ -187,7 +189,8 @@ private fun ListaObjetos(
 private fun InputBusquedaObjetos(
     textoIngresado: MutableState<String>,
     buscar: MutableState<Boolean>,
-    verTextNotFound: MutableState<Boolean>
+    verTextNotFound: MutableState<Boolean>,
+    initialSearch: MutableState<Boolean>
 ) {
     val maximaCantidadCaracteres = 40
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -198,7 +201,7 @@ private fun InputBusquedaObjetos(
             .padding(start = 16.dp, end = 16.dp, top = 16.dp),
         placeholder = { Text(stringResource(id = R.string.buscar)) },
         value = textoIngresado.value,
-        onValueChange = {  if (it.length <= maximaCantidadCaracteres) textoIngresado.value = it; buscar.value = true; verTextNotFound.value = false},
+        onValueChange = {  if (it.length <= maximaCantidadCaracteres) textoIngresado.value = it; buscar.value = true; initialSearch.value = false},
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(
             onSearch = {
