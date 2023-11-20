@@ -13,8 +13,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,7 +28,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -66,7 +68,7 @@ fun ConfirmarStl(navController: NavHostController, textoTopBar: MutableState<Str
                 .padding(start = 16.dp, top = 16.dp, end = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
-        ) {
+    ) {
         Column {
             Card(
                 modifier = Modifier.fillMaxWidth()
@@ -74,20 +76,31 @@ fun ConfirmarStl(navController: NavHostController, textoTopBar: MutableState<Str
                 Row {
                     Text(
                         text = stringResource(id = R.string.archivo_seleccionado) + " ${nombreArchivo.value}",
-                        Modifier.padding(start = 16.dp, top= 16.dp, end = 0.dp, bottom = 16.dp)
+                        Modifier.padding(start = 16.dp, top = 16.dp, end = 0.dp, bottom = 16.dp)
                     )
                 }
             }
             Button(
                 onClick = {
-                    confirmarYVisualizarObjeto(cargandoStl, context, nombreArchivo.value, errorLanzarVistaPrevia)
+                    confirmarYVisualizarObjeto(
+                        cargandoStl,
+                        context,
+                        nombreArchivo.value,
+                        errorLanzarVistaPrevia
+                    )
                 },
                 modifier = Modifier
                     .padding(bottom = 16.dp, top = 12.dp)
                     .fillMaxWidth()
             ) {
                 if (cargandoStl.value) SpinnerButton()
-                else Text(text = stringResource(id = R.string.confirmar))
+                else {
+                    Icon(
+                        Icons.Default.Done,
+                        contentDescription = stringResource(id = R.string.busqueda_catalogo)
+                    )
+                    Text(text = stringResource(id = R.string.confirmar))
+                }
             }
         }
         Box(

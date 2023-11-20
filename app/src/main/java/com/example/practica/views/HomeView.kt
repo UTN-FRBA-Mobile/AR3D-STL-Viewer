@@ -6,8 +6,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -61,7 +65,14 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
                 .padding(top = 12.dp)
                 .fillMaxWidth()
         ) {
-            Text(text = stringResource(id = R.string.catalogo))
+            Icon(
+                Icons.Default.List,
+                contentDescription = stringResource(id = R.string.busqueda_catalogo)
+            )
+            Text(
+                text = stringResource(id = R.string.catalogo),
+                Modifier.padding(start = 5.dp)
+            )
         }
         ListaObjetosRecientes(objetosVistosRecientemente.value, context, objetoEliminado, navController)
     }
