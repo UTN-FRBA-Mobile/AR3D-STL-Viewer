@@ -48,7 +48,7 @@
     <string name="buscar">Search...</string>
     <string name="no_results_found">No results were found for this search</string>
     <string name="catalog_error">Error retrieving the catalog, try again</string>
-    <string name="busqueda_catalogo" />
+    <string name="insufficient_features_message">Can\'t find anything. Aim device at a surface with more texture or color.</string>
     <string-array name="depth_options_array">
         <item>Enable depth</item>
         <item>Show depth map</item>

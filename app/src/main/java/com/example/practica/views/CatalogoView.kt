@@ -16,10 +16,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -58,12 +62,16 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.compose.SubcomposeAsyncImage
 import com.example.practica.R
+import com.example.practica.components.PopUp
+import com.example.practica.components.Spinner
+import com.example.practica.components.SpinnerButton
+import com.example.practica.components.Toast
 import com.example.practica.services.Objeto3d
 import com.example.practica.utils.hayConexionAInternet
 import com.example.practica.utils.lanzarVistaPrevia
 import com.example.practica.viewmodel.BusquedaArchivoStlViewModel
 import com.example.practica.viewmodel.BusquedaObjeto3dViewModel
-import com.example.practica.viewmodel.CatalogoInfinito
+import com.example.practica.viewmodel.CatalogoInfinitoViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -90,7 +98,7 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
     val buscar = remember { mutableStateOf(false) }
 
     val tamanioPagina = 2
-    val pagingSource = remember { mutableStateOf(CatalogoInfinito(busquedaObjeto3dViewModel)) }
+    val pagingSource = remember { mutableStateOf(CatalogoInfinitoViewModel(busquedaObjeto3dViewModel)) }
     val pager = remember { mutableStateOf(Pager(PagingConfig(pageSize = tamanioPagina)) { pagingSource.value }) }
     var lazyPagingItems = pager.value.flow.collectAsLazyPagingItems()
 
@@ -101,7 +109,7 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
     }
 
     LaunchedEffect(buscar.value) {
-        pagingSource.value = CatalogoInfinito(busquedaObjeto3dViewModel)
+        pagingSource.value = CatalogoInfinitoViewModel(busquedaObjeto3dViewModel)
         busquedaObjeto3dViewModel.setTextoABuscar(textoIngresado.value)
         pager.value = Pager(PagingConfig(pageSize = tamanioPagina)) { pagingSource.value }
         buscar.value = false
@@ -139,6 +147,7 @@ private fun ListaObjetos(
 ) {
     val loadState = lazyPagingItems.loadState
 
+
     when (loadState.refresh) {
         is LoadState.Loading -> {
             Spinner(Modifier.padding(top = 8.dp, bottom = 8.dp))
@@ -163,7 +172,9 @@ private fun ListaObjetos(
             } else {
                 verTextNotFound.value = false
                 LazyColumn(
-                    modifier = Modifier.padding(top = 90.dp),
+                    state = rememberLazyListState(),
+                    modifier = Modifier
+                        .padding(top = 90.dp),
                 ) {
                     items(lazyPagingItems) { item ->
                         if (item != null) {
@@ -192,7 +203,7 @@ private fun InputBusquedaObjetos(
     verTextNotFound: MutableState<Boolean>,
     initialSearch: MutableState<Boolean>
 ) {
-    val maximaCantidadCaracteres = 40
+    val maximaCantidadCaracteres = 35
     val keyboardController = LocalSoftwareKeyboardController.current
 
     OutlinedTextField(
@@ -200,6 +211,7 @@ private fun InputBusquedaObjetos(
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, top = 16.dp),
         placeholder = { Text(stringResource(id = R.string.buscar)) },
+        shape = RoundedCornerShape(50),
         value = textoIngresado.value,
         onValueChange = {  if (it.length <= maximaCantidadCaracteres) textoIngresado.value = it; buscar.value = true; initialSearch.value = false},
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
@@ -210,11 +222,17 @@ private fun InputBusquedaObjetos(
             }
         ),
         singleLine = true,
+        leadingIcon = {
+            Icon(
+                Icons.Default.Search,
+                contentDescription = stringResource(id = R.string.busqueda_catalogo)
+            )
+        },
         trailingIcon = {
             if (textoIngresado.value.isNotBlank())
                 IconButton(onClick = {textoIngresado.value = ""}) {
                     Icon(
-                        Icons.Rounded.Clear,
+                        Icons.Default.Clear,
                         contentDescription = stringResource(id = R.string.busqueda_catalogo),
                     )
                 }
@@ -339,7 +357,7 @@ fun ToastConfirmacionDescargaArchivo(
         MensajeToastErrorAlGuardarArchivo(estadoAlGuardarArchivo)
     }
     when(estadoAlGuardarArchivo.value.estado) {
-        "GUARDADO" -> MensajeToast(
+        "GUARDADO" -> Toast(
             texto = stringResource(id = R.string.archivo) + " ${estadoAlGuardarArchivo.value.nombreArchivo}.stl " + stringResource(id = R.string.guardado),
             MaterialTheme.colorScheme.secondary,
             onDismiss = {estadoAlGuardarArchivo.value = EstadoAlGuardarArchivo()}
@@ -351,7 +369,7 @@ fun ToastConfirmacionDescargaArchivo(
 
 @Composable
 fun MensajeToastErrorAlGuardarArchivo(estadoAlGuardarArchivo: MutableState<EstadoAlGuardarArchivo>) {
-    MensajeToast(
+    Toast(
         texto = stringResource(id = R.string.error_descargando_archivo) + "${estadoAlGuardarArchivo.value.nombreArchivo}.stl!",
         Color.Red,
         onDismiss = {estadoAlGuardarArchivo.value = EstadoAlGuardarArchivo()}

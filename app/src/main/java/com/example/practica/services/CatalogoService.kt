@@ -22,7 +22,7 @@ interface CatalogoApiService {
 }
 
 fun catalogoApiService(): CatalogoApiService {
-    val BASE_URL = "https://y788k.wiremockapi.cloud/"
+    val BASE_URL = "https://8kqmz.wiremockapi.cloud/"
 
     val retrofit = Retrofit
         .Builder()

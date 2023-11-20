@@ -1,4 +1,4 @@
-package com.example.practica.views
+package com.example.practica.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

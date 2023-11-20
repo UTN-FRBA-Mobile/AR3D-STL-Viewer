@@ -130,8 +130,7 @@ class ArCoreRenderer(val activity: ArCoreActivity) :
   val worldLightDirection = floatArrayOf(0.0f, 0.0f, 0.0f, 0.0f)
   val viewLightDirection = FloatArray(4) // view x world light direction
 
-  val session
-    get() = activity.arCoreSessionHelper.session
+  val session get() = activity.arCoreSessionHelper.session
 
   val displayRotationHelper = DisplayRotationHelper(activity)
   val trackingStateHelper = TrackingStateHelper(activity)

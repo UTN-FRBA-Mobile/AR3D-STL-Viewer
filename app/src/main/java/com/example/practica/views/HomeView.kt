@@ -2,17 +2,16 @@ package com.example.practica.views
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,14 +20,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.practica.R
 import com.example.practica.arcore.ArCoreActivity
+import com.example.practica.components.Toast
 import com.example.practica.repository.buscarObjetosVistosRecientementeEnOrdenUltimaVisualizacion
-import com.example.practica.utils.buscarNombreArchivo
 import com.example.practica.utils.hayConexionAInternet
 
 @Composable
@@ -36,7 +34,7 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
     val context = navController.context
     val objetosVistosRecientemente = remember { mutableStateOf<List<String>>(emptyList()) }
     val objetoEliminado = remember { mutableStateOf(false) }
-    val addFileLauncher = managedActivityResultLauncher(context, navController)
+
     textoTopBar.value = stringResource(id = R.string.bienvenido)
 
     LaunchedEffect(1, objetoEliminado.value) {
@@ -55,14 +53,6 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
                 Modifier.padding(16.dp)
             )
         }
-        ElevatedButton(
-            onClick = { addFileLauncher.launch("*/*") },
-            modifier = Modifier
-                .padding(top = 16.dp)
-                .fillMaxWidth()
-        ) {
-            Text(text = stringResource(id = R.string.buscar_arhivo))
-        }
         Button(
             onClick = {
                 if (hayConexionAInternet(context)) {
@@ -72,30 +62,26 @@ fun Home(navController: NavHostController, textoTopBar: MutableState<String>) {
                 }
             },
             modifier = Modifier
-                .padding(top = 8.dp)
+                .padding(top = 12.dp)
                 .fillMaxWidth()
         ) {
-            Text(text = stringResource(id = R.string.catalogo))
+            Icon(
+                Icons.Default.List,
+                contentDescription = stringResource(id = R.string.busqueda_catalogo)
+            )
+            Text(
+                text = stringResource(id = R.string.catalogo),
+                Modifier.padding(start = 5.dp)
+            )
         }
-        ListaObjetosRecientes(objetosVistosRecientemente.value, context, objetoEliminado)
+        ListaObjetosRecientes(objetosVistosRecientemente.value, context, objetoEliminado, navController)
     }
 
-    MensajeToast(
+    Toast(
         texto = stringResource(id = R.string.sin_conexion),
         Color.Red,
         esVisible = { !hayConexionAInternet(context = context) }
     )
-}
-
-@Composable
-private fun managedActivityResultLauncher(context: Context, navController: NavHostController): ManagedActivityResultLauncher<String, Uri?> {
-    val addFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
-        if (it != null) {
-            val fileText = buscarNombreArchivo(context, it)
-            navController.navigate("confirmarstl/${fileText}")
-        }
-    }
-    return addFileLauncher
 }
 
 fun lanzarVistaPreviaObjetoReciente(context: Context, nombreObjeto3dObj: String) {

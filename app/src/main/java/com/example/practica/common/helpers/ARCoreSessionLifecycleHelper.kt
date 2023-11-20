@@ -72,7 +72,7 @@ class ARCoreSessionLifecycleHelper(
 
     return try {
       // Request installation if necessary.
-      when (ArCoreApk.getInstance().requestInstall(activity, !installRequested)!!) {
+      when (ArCoreApk.getInstance().requestInstall(activity, !installRequested)) {
         ArCoreApk.InstallStatus.INSTALL_REQUESTED -> {
           installRequested = true
           // tryCreateSession will be called again, so we return null for now.
@@ -115,24 +115,4 @@ class ARCoreSessionLifecycleHelper(
     session = null
   }
 
-  fun onRequestPermissionsResult(
-    requestCode: Int,
-    permissions: Array<out String>,
-    results: IntArray
-  ) {
-    if (!CameraPermissionHelper.hasCameraPermission(activity)) {
-      // Use toast instead of snackbar here since the activity will exit.
-      Toast.makeText(
-          activity,
-          "Camera permission is needed to run this application",
-          Toast.LENGTH_LONG
-        )
-        .show()
-      if (!CameraPermissionHelper.shouldShowRequestPermissionRationale(activity)) {
-        // Permission denied with checking "Do not ask again".
-        CameraPermissionHelper.launchPermissionSettings(activity)
-      }
-      activity.finish()
-    }
-  }
 }

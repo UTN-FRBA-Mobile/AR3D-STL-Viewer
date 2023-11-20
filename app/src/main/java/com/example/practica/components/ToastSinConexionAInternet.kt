@@ -1,4 +1,4 @@
-package com.example.practica.views
+package com.example.practica.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,12 +19,13 @@ import com.example.practica.R
 import kotlinx.coroutines.delay
 
 @Composable
-fun MensajeToast(texto: String, color: Color, esVisible: () -> Boolean = {true}, onDismiss: () -> Unit = {}) {
+fun Toast(texto: String, color: Color, esVisible: () -> Boolean = {true}, onDismiss: () -> Unit = {}) {
     val toastVisible = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        delay(1000)
         toastVisible.value = esVisible()
+        delay(5000)
+        toastVisible.value = false
     }
 
     if(toastVisible.value) {
