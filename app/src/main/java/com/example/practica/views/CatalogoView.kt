@@ -22,7 +22,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -115,7 +114,7 @@ fun Catalogo(navController: NavHostController, textoTopBar: MutableState<String>
         buscar.value = false
     }
 
-    InputBusquedaObjetos(textoIngresado, buscar, verTextNotFound, initialSearch)
+    InputBusquedaObjetos(textoIngresado, buscar, initialSearch)
 
     ListaObjetos(lazyPagingItems, verPopUpError, context, busquedaArchivoStlViewModel, textoIngresado, verTextNotFound, initialSearch)
 
@@ -200,7 +199,6 @@ private fun ListaObjetos(
 private fun InputBusquedaObjetos(
     textoIngresado: MutableState<String>,
     buscar: MutableState<Boolean>,
-    verTextNotFound: MutableState<Boolean>,
     initialSearch: MutableState<Boolean>
 ) {
     val maximaCantidadCaracteres = 35
