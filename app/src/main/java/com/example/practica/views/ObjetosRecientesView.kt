@@ -98,6 +98,10 @@ fun ObjetoReciente(nombreObjeto: String, context: Context, objetoEliminado: Muta
         }
     }
 
+    LaunchedEffect(isDragging.value) {
+        isDragging.value = !verPopUp.value
+    }
+
     Card(
         modifier = Modifier
             .fillMaxSize()
