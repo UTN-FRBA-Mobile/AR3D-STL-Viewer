@@ -26,6 +26,7 @@ fun Toast(texto: String, color: Color, esVisible: () -> Boolean = {true}, onDism
         toastVisible.value = esVisible()
         delay(5000)
         toastVisible.value = false
+        onDismiss()
     }
 
     if(toastVisible.value) {
