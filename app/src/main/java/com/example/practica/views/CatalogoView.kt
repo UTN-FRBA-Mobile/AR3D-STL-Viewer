@@ -367,10 +367,14 @@ fun ToastConfirmacionDescargaArchivo(
 
 @Composable
 fun MensajeToastErrorAlGuardarArchivo(estadoAlGuardarArchivo: MutableState<EstadoAlGuardarArchivo>) {
+    val busquedaArchivoStlViewModel: BusquedaArchivoStlViewModel = viewModel()
     Toast(
         texto = stringResource(id = R.string.error_descargando_archivo) + "${estadoAlGuardarArchivo.value.nombreArchivo}.stl!",
         Color.Red,
-        onDismiss = {estadoAlGuardarArchivo.value = EstadoAlGuardarArchivo()}
+        onDismiss = {
+            estadoAlGuardarArchivo.value = EstadoAlGuardarArchivo()
+            busquedaArchivoStlViewModel.setErrorLiveData(false)
+        }
     )
 }
 

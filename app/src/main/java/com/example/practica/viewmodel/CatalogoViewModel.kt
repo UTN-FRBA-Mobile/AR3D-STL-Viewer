@@ -26,6 +26,10 @@ class BusquedaArchivoStlViewModel : ViewModel() {
             }
         }
     }
+
+    fun setErrorLiveData(errorLiveData: Boolean) {
+        this.errorLiveData.postValue(errorLiveData)
+    }
 }
 
 class ArchivoStl(
