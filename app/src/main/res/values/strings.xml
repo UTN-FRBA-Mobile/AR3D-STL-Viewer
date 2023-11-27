@@ -55,6 +55,6 @@
     <string name="catalog_error">Error al obtener el catálogo, volvé a intentar</string>
     <string name="busqueda_catalogo" translatable="false" />
     <string name="insufficient_features_message">No se puede encontrar ningún objeto. Apunte el dispositivo a una superficie con más textura o color.</string>
-
+    <string name="buscar_archivo_stl">"Buscar archivo .stl"</string>
 
 </resources>

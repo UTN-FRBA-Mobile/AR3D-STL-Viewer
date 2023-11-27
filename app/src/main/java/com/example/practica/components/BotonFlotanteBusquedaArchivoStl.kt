@@ -30,6 +30,6 @@ fun BotonFlotanteBusquedaArchivoStl(
             Icons.Default.Search,
             contentDescription = stringResource(id = R.string.busqueda_catalogo)
         )
-        Text(text = "Buscar archivo .stl")
+        Text(text = stringResource(id = R.string.buscar_archivo_stl))
     }
 }
